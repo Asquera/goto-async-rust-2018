@@ -6,7 +6,7 @@ A memory-violating love story
 ## Who here
 
 <div class="fragment" data-fragment-index="2">
-* has used C/C++ in Rust code?
+* has used `C/C++` in `Rust` code?
 </div>
 
 <div class="fragment" data-fragment-index="3">
@@ -14,7 +14,7 @@ A memory-violating love story
 </div>
 
 <div class="fragment" data-fragment-index="4">
-* woudl call themselves a C++ developer?
+* would call themselves a C++ developer?
 </div>
 
 </section>
@@ -33,7 +33,11 @@ extern "C" {
 }
 
 unsafe fn danger_zone<'a>(value: &'a str) -> &'a str {
-    reverse(cstr::from(value).unwrap()).into()
+    CStr::from_ptr(
+        reverse(
+            CStr::from(value).unwrap()
+        )
+    ).to_str()
 }
 ```
 
@@ -61,12 +65,9 @@ extern "C" fn reverse(const *c_char) -> const *c_char {
 
 <div class="fragment" data-fragment-index="2">
 
-```console
- 👉 (rayya) my_proj> ls headers/
- reverse-rs.h 
- 👉 (rayya) my_proj> cat headers/reverse-rs.h
- // Safely reverse a unicode string
- const char *reverse(const char *in);
+```C
+// Safely reverse a unicode string
+const char *reverse(const char *in);
 ```
 
 ```C
@@ -78,46 +79,114 @@ void main() {
 
 </div>
 
-## Problems
+## Some Problems
 
-* I don't like writing headers
+* Writing headers is boooring
 * Reading data from C and back again
 * Keeping state and memory management
 * Creating "pretty" APIs
 
 ---
 
-## The Result
+## Memory management
 
-<img src="thunder_demo.png"  height="512px" />
-
----
-
-## More fancy things
-
-* Use comments for descriptions
-* Allow global arguments via attribute parameters
-* Correctly parse inputs, throw errors at match stage
-
----
+Put your troubles in a box ✨
 
 ```rust
-struct Thor;
-
-/// An application that shoots lightning out of its hands
-#[thunderclap(drunk: bool: "Thor drinks a lot")]
-impl Thor {
-    /// Say hello to someone
-    fn hello(name: &str, times: Option<u128>) { /* ... */ }
-    
-    /// I...I can totally jump that far
-    fn no_argument() { println!("Drunk: {}", Self::drunk()); }
+#[repr(C)]
+struct MyThing {
+    /* ... */
 }
 
-fn main() {
-    Thor::start();
+#[no_mangle]
+extern "C" fn make_thing() -> Box<MyThing> {
+    Box::new(MyThing {
+        /* ... */
+    })
 }
 ```
+
+---
+
+## Memory management (part 2)
+
+C:
+
+```C
+void main() {
+    MyThing *t = make_thing();
+    free(t);
+}
+```
+
+<div class="fragment" data-fragment-index="2">
+Rust:
+
+```rust
+::std::mem::forget(t);
+```
+</div>
+
+---
+
+## Creating "pretty" APIs
+
+What constitutes a "pretty" API in each language?
+
+---
+
+```C
+pr_mod_ctx ctx;
+int ret = proj_module_init(&ctx, a, b, /* ... */);
+if (ret) {
+    /* Handle error explicitly */
+}
+```
+
+---
+
+```Cpp
+MyObj obj = new MyObj(a, b, /* .. */);
+if (obj == null) {
+    /* handle errors explicitly */
+}
+```
+
+```Cpp
+class MyObj {
+public:
+  MyObj() {
+    throw CantBeBotheredException();
+  }
+}
+
+try {
+    MyObj obj = new MyObj(a, b, /* .. */);
+} catch (CantBeBotheredException *e) {
+    /* handle errors implicitly */
+}
+```
+
+---
+
+### Can you throw a `C++` exception from Rust?
+
+---
+
+<section> 
+<h2> 😱 </h2>
+</section>
+
+---
+
+### YES
+
+--- 
+
+### But please don't
+
+- Very unsafe
+- *Very* dependant on the compiler you use
 
 ---
 
