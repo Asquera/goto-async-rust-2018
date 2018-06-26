@@ -1,3 +1,4 @@
+<script src="//twemoji.maxcdn.com/2/twemoji.min.js?11.0"></script>
 <section> <h2><code>Rust</code>  💖  <code>C/C++</code></h2>
 
 A memory-violating love story
@@ -173,9 +174,7 @@ try {
 
 ---
 
-<section> 
-<h2> 😱 </h2>
-</section>
+## 😱
 
 ---
 

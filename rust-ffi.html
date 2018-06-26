@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="http://revealjs.com/css/reveal.css">
+  <link rel="stylesheet" href="template/css/reveal.css">
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
@@ -79,17 +79,17 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="http://revealjs.com/css/theme/moon.css" id="theme">
+  <link rel="stylesheet" href="template/css/theme/moon.css" id="theme">
   <!-- Printing and PDF exports -->
   <script>
     var link = document.createElement( 'link' );
     link.rel = 'stylesheet';
     link.type = 'text/css';
-    link.href = window.location.search.match( /print-pdf/gi ) ? 'http://revealjs.com/css/print/pdf.css' : 'http://revealjs.com/css/print/paper.css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'template/css/print/pdf.css' : 'template/css/print/paper.css';
     document.getElementsByTagName( 'head' )[0].appendChild( link );
   </script>
   <!--[if lt IE 9]>
-  <script src="http://revealjs.com/lib/js/html5shiv.js"></script>
+  <script src="template/lib/js/html5shiv.js"></script>
   <![endif]-->
 </head>
 <body>
@@ -99,6 +99,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section class="slide level2">
 
+<script src="//twemoji.maxcdn.com/2/twemoji.min.js?11.0"></script>
 <section>
 <h2>
 <code>Rust</code> 💖 <code>C/C++</code>
@@ -241,13 +242,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h3 id="can-you-throw-a-c-exception-from-rust">Can you throw a <code>C++</code> exception from Rust?</h3>
 </section>
-<section class="slide level2">
-
-<section>
-<h2>
-😱
-</h2>
-</section>
+<section id="section" class="slide level2">
+<h2>😱</h2>
 </section>
 <section class="slide level2">
 
@@ -294,8 +290,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </div>
   </div>
 
-  <script src="http://revealjs.com/lib/js/head.min.js"></script>
-  <script src="http://revealjs.com/js/reveal.js"></script>
+  <script src="template/lib/js/head.min.js"></script>
+  <script src="template/js/reveal.js"></script>
 
   <script>
 
@@ -307,9 +303,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
         // Optional reveal.js plugins
         dependencies: [
-          { src: 'http://revealjs.com/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-          { src: 'http://revealjs.com/plugin/zoom-js/zoom.js', async: true },
-          { src: 'http://revealjs.com/plugin/notes/notes.js', async: true }
+          { src: 'template/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'template/plugin/zoom-js/zoom.js', async: true },
+          { src: 'template/plugin/notes/notes.js', async: true }
         ]
       });
     </script>
