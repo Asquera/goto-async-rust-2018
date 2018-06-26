@@ -1,23 +1,14 @@
-<section> <h2><code>Rust</code>  💖  <code>C/C++</code></h2>
-
-A memory-violating love story
+---
+title: Rust 💖 C/C++
+subtitle: A memory-violating love story
+---
 
 
 ## Who here
 
-<div class="fragment" data-fragment-index="2">
-* has used `C/C++` in `Rust` code?
-</div>
-
-<div class="fragment" data-fragment-index="3">
-* would call themselves a C developer?
-</div>
-
-<div class="fragment" data-fragment-index="4">
-* would call themselves a C++ developer?
-</div>
-
-</section>
+> * has used `C/C++` in `Rust` code?
+> * would call themselves a C developer?
+> * would call themselves a C++ developer?
 
 ---
 
