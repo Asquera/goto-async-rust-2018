@@ -47,7 +47,7 @@ unsafe fn danger_zone<'a>(value: &'a str) -> &'a str {
 ## Turning tables
 
 * `extern "C"` declares an ABI in both directions
-* Use `#[no_mangle]` to preserve the function name as-is
+* Use `#[no_mangle]` to preserve the function name
 
 ```rust
 use unicode_segmentation::UnicodeSegmentation;
@@ -62,7 +62,7 @@ extern "C" fn reverse(const *c_char) -> const *c_char {
 
 ## Turning tables (part 2)
 
-* But...how do we call this?
+* How do we call this?
 
 <div class="fragment" data-fragment-index="2">
 
@@ -124,7 +124,7 @@ void main() {
 Rust:
 
 ```rust
-::std::mem::forget(t);
+::std::mem::forget(thing);
 ```
 </div>
 
@@ -132,22 +132,35 @@ Rust:
 
 ## Creating "pretty" APIs
 
-What constitutes a "pretty" API in each language?
+What does that mean anyway?
 
 ---
 
+C
+
 ```C
-pr_mod_ctx ctx;
+pr_mod_ctx ctx; // or *ctx
 int ret = proj_module_init(&ctx, a, b, /* ... */);
 if (ret) {
     /* Handle error explicitly */
+    goto fail;
+}
+```
+
+```C
+ret = proj_module_function(ctx, a, b, /* ... */);
+if (ret) {
+    /* Handle error explicitly */
+    goto fail;
 }
 ```
 
 ---
 
+C++
+
 ```Cpp
-MyObj obj = new MyObj(a, b, /* .. */);
+MyObj obj = MyObj::create(a, b, /* .. */);
 if (obj == null) {
     /* handle errors explicitly */
 }
@@ -174,7 +187,7 @@ try {
 
 ---
 
-## 😱
+### 😱
 
 ---
 
@@ -184,33 +197,92 @@ try {
 
 ### But please don't
 
-- Very unsafe
-- *Very* dependant on the compiler you use
+* Very unsafe
+* *Very* dependant on the compiler you use
+* The world doesn't need more exceptions
 
 ---
 
-### Some Drawbacks
+### But how?
 
-* Requires nightly rust because `proc_macro`
-* Makes a lot of assumptions about use-cases
+* `throw` keyword is replaced to `libc++` call by compiler
+* Use `libc++` directly, then C++ "higher up" catches
 
----
-
-### Lots of work left to do
-
-* Error messages sometimes less than awesome
-* sub-sub-commands not supported (yet)
-* No application state with `self` (yet)
-* Non-optional flags are always in-order
+```rust
+// TODO: Implement this with Rust
+```
 
 ---
 
-## In Conclusion
+### Anyway
 
-* [github.com/spacekookie/thunder](https://github.com/spacekookie/thunder)
-* [crates.io/crates/thunder](https://crates.io/crates/thunder)
+```rust
+/// Ok(...) or Err(...)
+fn foo() -> Result<T, Error>;
 
-<br/><br/>
+/// Some(...) or None
+fn bar() -> Option<T>;
+```
 
-* https://spacekookie.de
-* https://twitter.com/spacekookie
+How does `None` compare to `null`?
+
+---
+
+### Emulating `Option<T>`
+
+```rust
+fn bar() -> Option<const *c_char> { /* ... */ }
+```
+
+```Cpp
+char *str = bar();
+if(str == null) {
+    /* this is None */
+}
+```
+
+---
+
+### Emulating `Result<T,E>`
+
+* This is a lot harder
+* There are `C++` implementations of `Result`
+
+---
+
+### So what about C?
+
+```C
+int ret = some_rust_function(&ctx, "abc", 42);
+```
+
+C pointers become `const *c_void`
+
+```rust
+#[no_mangle]
+extern "C" fn some_rust_function(
+    ctx: const *c_void, 
+    s: const *c_char, 
+    num: uint32_t)
+{
+    /* ... */
+}
+
+```
+
+--- 
+
+But: `c_void` just refers to a Rust type, right?
+
+```rust
+#[no_mangle]
+extern "C" fn some_rust_function(
+   /* ... */
+{
+    let ctx: &mut MyState = unsafe {
+        &mut *ctx as &mut MyState
+    };
+
+    ctx.some_mut_function();
+}
+```
