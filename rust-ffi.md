@@ -74,7 +74,7 @@ const char *reverse(const char *in);
 ```C
 #include "reverse-rs.h"
 void main() {
-    printf("%s\n", reverse("Hello, RustConf 💝!"));
+    printf("%s\n", reverse("Hello, RustConf 👩🏽‍💻!"));
 }
 ```
 
