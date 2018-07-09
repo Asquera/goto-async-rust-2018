@@ -11,6 +11,31 @@ subtitle: A memory-violating love story
 
 ---
 
+## `whoami`
+
+* Katharina Fey
+* @spacekookie
+* FOSS contributer; BDFL of...something
+* Consultant @ asquera
+
+---
+
+## `whoami`
+
+* Contributer to the CLI-WG
+* Author of (too) many `use[ful|less]` crates
+* Hobbyist hardware maker
+
+---
+
+## `whoami`
+
+* Core contributer to `qaul.net`
+  * ~500kloc of C99
+  * Primary inspiration for this talk
+
+---
+
 ## Boring FFi
 
 - Declare some headers to native code
@@ -211,6 +236,25 @@ try {
 
 ---
 
+### Exception ABI
+
+```
+ typedef _Unwind_Reason_Code (*_Unwind_Stop_Fn)
+		(int version,
+		 _Unwind_Action actions,
+		 uint64 exceptionClass,
+		 struct _Unwind_Exception *exceptionObject,
+		 struct _Unwind_Context *context,
+		 void *stop_parameter );
+
+    _Unwind_Reason_Code _Unwind_ForcedUnwind
+	      ( struct _Unwind_Exception *exception_object,
+		_Unwind_Stop_Fn stop,
+		void *stop_parameter );
+```
+
+---
+
 ### Anyway
 
 ```rust
@@ -283,3 +327,11 @@ extern "C" fn some_rust_function(
     ctx.some_mut_function();
 }
 ```
+
+---
+
+### Generating headers
+
+* `cbindgen` generates C-headers from Rust code
+* Can be hooked into the build-pipline
+  * Don't keep headers in the repo – generate them!
