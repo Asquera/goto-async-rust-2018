@@ -29,3 +29,7 @@ Let's maybe start the outline of the talk 2 1/2 months before giving it. Followi
  - Integrating `cargo`into `cmake`
  - Dynamicly linking std and dependencies in Rust projects (applicable to *all* projects)
  - And much more :)
+
+### More infos
+
+ - A talk about C++ API's: https://www.youtube.com/watch?v=Ct7jveV7j8g
