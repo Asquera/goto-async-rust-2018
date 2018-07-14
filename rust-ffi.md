@@ -64,11 +64,17 @@ unsafe fn danger_zone<'a>(value: &'a str) -> &'a str {
 * Use `#[no_mangle]` to preserve the function name
 
 ```rust
-use unicode_segmentation::UnicodeSegmentation;
-
 #[no_mangle]
-extern "C" fn reverse(const *c_char) -> const *c_char {
-    /* ... TODO ... */
+pub extern "C" fn reverse(word: *const c_char) -> *const c_char {
+    let mut s: String = match unsafe { 
+            CStr::from_ptr(word) 
+        }.to_str() {
+            Ok(s) => s,
+            _ => return unsafe { ::std::mem::uninitialized() },
+    }.into();
+    ur::reverse_grapheme_clusters_in_place(&mut s);
+    println!("{}", s);
+    CString::new(s).unwrap().into_raw()
 }
 ```
 
@@ -88,7 +94,7 @@ const char *reverse(const char *in);
 ```C
 #include "reverse-rs.h"
 void main() {
-    printf("%s\n", reverse("Hello, RustConf 👩🏽‍💻!"));
+    printf("'%s' reversed: '%s' \n", greeting, reverse(greeting));
 }
 ```
 
@@ -96,7 +102,7 @@ void main() {
 
 <div class="fragment" data-fragment-index="3">
 ```console```
-!👩🏽‍💻 fnoCtsuR ,olleH
+'привет Rustfest 👩🏽‍💻' reversed: '💻👩🏽‍ tseftsuR тевирп'
 ```
 </div>
 
@@ -213,44 +219,41 @@ try {
 
 ---
 
-### YES
+### Well
 
---- 
+---
 
-### But please don't
+### That depends...
 
-* Very unsafe
-* *Very* dependant on the compiler you use
-* The world doesn't need more exceptions
+<div class="fragment" data-fragment-index="2">
+* An exception is a setjmp/ longjmp pair on stack
+* Compiler swaps `throw` keyword with `libc++` calls
+* Those unwind the stack to find a `setjmp` marker
+* Resuming execution from that point
+</div>
 
 ---
 
 ### But how?
 
-* `throw` keyword is replaced to `libc++` call by compiler
-* Use `libc++` directly, then C++ "higher up" catches
-
-```rust
-// TODO: Implement this with Rust
-```
 
 ---
 
 ### Exception ABI
 
 ```
- typedef _Unwind_Reason_Code (*_Unwind_Stop_Fn)
-		(int version,
-		 _Unwind_Action actions,
-		 uint64 exceptionClass,
-		 struct _Unwind_Exception *exceptionObject,
-		 struct _Unwind_Context *context,
-		 void *stop_parameter );
+typedef _Unwind_Reason_Code (*_Unwind_Stop_Fn)
+    (int version,
+        _Unwind_Action actions,
+        uint64 exceptionClass,
+        struct _Unwind_Exception *exceptionObject,
+        struct _Unwind_Context *context,
+        void *stop_parameter );
 
-    _Unwind_Reason_Code _Unwind_ForcedUnwind
-	      ( struct _Unwind_Exception *exception_object,
-		_Unwind_Stop_Fn stop,
-		void *stop_parameter );
+_Unwind_Reason_Code _Unwind_ForcedUnwind
+    ( struct _Unwind_Exception *exception_object,
+        _Unwind_Stop_Fn stop,
+        void *stop_parameter );
 ```
 
 ---
@@ -335,3 +338,13 @@ extern "C" fn some_rust_function(
 * `cbindgen` generates C-headers from Rust code
 * Can be hooked into the build-pipline
   * Don't keep headers in the repo – generate them!
+
+---
+
+### Some thoughts on linking
+
+* Rust links statically by default
+* Each `foo.so` would be several MB big!
+* `-C prefer-dynamic` to the rescue
+  * Dynamically link libraries
+  * Requires you to link them together yourself in your build pipeline

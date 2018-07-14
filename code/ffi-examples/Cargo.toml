@@ -1,0 +1,11 @@
+[package]
+name = "ffi-examples"
+version = "0.1.0"
+authors = ["Katharina Fey <kookie@spacekookie.de>"]
+
+[lib]
+name = "rusty"
+crate-type = ["dylib"]
+
+[dependencies]
+unicode-reverse = "1.0.6"
