@@ -1,9 +1,6 @@
 ---
 title: Rust  💖  C/C++
 subtitle: A memory-violating love story
-output:
-  revealjs::revealjs_presentation:
-    background_transition: None
 ---
 
 ## `whoami(1)`
