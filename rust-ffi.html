@@ -101,33 +101,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <p class="subtitle">A memory-violating love story</p>
 </section>
 
-<section id="who-here" class="slide level2">
-<h2>Who here</h2>
+<section id="whoami1" class="slide level2">
+<h2><code>whoami(1)</code></h2>
+<p>Katharina Fey (<code>@spacekookie</code>)</p>
+<p><br/></p>
+<p>Thanks to</p>
 <ul>
-<li class="fragment">has used <code>C/C++</code> in <code>Rust</code> code?</li>
-<li class="fragment">would call themselves a C developer?</li>
-<li class="fragment">would call themselves a C++ developer?</li>
+<li>My company <strong>Ferris Systems</strong></li>
+<li>Mozilla 🧡</li>
 </ul>
 </section>
-<section id="whoami" class="slide level2">
-<h2><code>whoami</code></h2>
-<ul>
-<li>Katharina Fey</li>
-<li><span class="citation" data-cites="spacekookie">@spacekookie</span></li>
-<li>FOSS contributer; BDFL of…something</li>
-<li>Consultant @ asquera</li>
-</ul>
-</section>
-<section id="whoami-1" class="slide level2">
-<h2><code>whoami</code></h2>
+<section id="whoami2" class="slide level2">
+<h2><code>whoami(2)</code></h2>
 <ul>
 <li>Contributer to the CLI-WG</li>
 <li>Author of (too) many <code>use[ful|less]</code> crates</li>
 <li>Hobbyist hardware maker</li>
 </ul>
 </section>
-<section id="whoami-2" class="slide level2">
-<h2><code>whoami</code></h2>
+<section id="whoami3" class="slide level2">
+<h2><code>whoami(3)</code></h2>
 <ul>
 <li>Core contributer to <code>qaul.net</code>
 <ul>
@@ -136,24 +129,78 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul>
 </section>
-<section id="boring-ffi" class="slide level2">
-<h2>Boring FFi</h2>
+<section id="why" class="slide level2">
+<h2>Why</h2>
+<p><br/></p>
+<p>Rust promises easy FFI to C code</p>
+<p>What does this mean?</p>
+<div class="fragment" data-fragment-index="2">
+<p>What do we <em>want</em> it to mean?</p>
+</div>
+</section>
+<section id="question-time" class="slide level2">
+<h2>Question time</h2>
+<p><br/></p>
+<p>Who here</p>
 <ul>
-<li>Declare some headers to native code</li>
-<li>Use <code>unsafe</code> a lot</li>
-<li>Make data C-compatible</li>
+<li class="fragment">has used <code>C/C++</code> in <code>Rust</code> code?</li>
+<li class="fragment">would call themselves a C developer?</li>
+<li class="fragment">would call themselves a C++ developer?</li>
 </ul>
+</section>
+<section id="abi" class="slide level2">
+<h2>ABI</h2>
+<p>Application Binary Interface</p>
+<p><br/></p>
+<ul>
+<li>Defines the function signature (in binary)</li>
+<li>Much like an API but for linkers</li>
+</ul>
+</section>
+<section id="abi-1" class="slide level2">
+<h2>ABI</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">    <span class="kw">fn</span> reverse(<span class="kw">const</span> *<span class="dt">c_char</span>) -&gt; <span class="kw">const</span> *<span class="dt">c_char</span>;</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">    <span class="co">// ...</span></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="op">}</span></a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">unsafe</span> <span class="kw">fn</span> danger_zone&lt;<span class="ot">&#39;a</span>&gt;(value: &amp;<span class="ot">&#39;a</span> <span class="dt">str</span>) -&gt; &amp;<span class="ot">&#39;a</span> <span class="dt">str</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">    CStr::from_ptr(</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">        reverse(</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">            CStr::from(value).unwrap()</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">        )</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">    ).to_str()</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="op">}</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="at">#[</span>repr<span class="at">(</span>C<span class="at">)]</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw">struct</span> Foo <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="at">#[</span>repr<span class="at">(</span>C<span class="at">)]</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="kw">enum</span> Bar <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">union OhYea <span class="op">{</span> <span class="co">/* unions are just cool by default */</span> <span class="op">}</span></a></code></pre></div>
+</section>
+<section id="abi-2" class="slide level2">
+<h2>ABI</h2>
+<p><img src="images/ABIs.png"  height=545px></p>
+</section>
+<section id="c-code-from-rust" class="slide level2">
+<h2>C code from Rust</h2>
+<p><br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/></p>
+</section>
+<section id="boring-ffi" class="slide level2">
+<h2>Boring FFi</h2>
+<div class="fragment" data-fragment-index="2">
+<ul>
+<li>Bind to native API with <code>extern</code> functions</li>
+<li>Wrap function calls in <code>unsafe</code></li>
+<li>Make data C-compatible</li>
+</ul>
+</div>
+<div class="fragment" data-fragment-index="3">
+<div class="sourceCode" id="cb2"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">    <span class="kw">fn</span> reverse(<span class="kw">const</span> *<span class="dt">c_char</span>) -&gt; <span class="kw">const</span> *<span class="dt">c_char</span>;</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="op">}</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">unsafe</span> <span class="kw">fn</span> danger_zone&lt;<span class="ot">&#39;a</span>&gt;(value: &amp;<span class="ot">&#39;a</span> <span class="dt">str</span>) -&gt; &amp;<span class="ot">&#39;a</span> <span class="dt">str</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">    CStr::from_ptr(</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">        reverse(</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">            CStr::from(value).unwrap()</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">        )</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">    ).to_str()</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="op">}</span></a></code></pre></div>
+</div>
 </section>
 <section id="turning-tables" class="slide level2">
 <h2>Turning tables</h2>
@@ -161,18 +208,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>extern &quot;C&quot;</code> declares an ABI in both directions</li>
 <li>Use <code>#[no_mangle]</code> to preserve the function name</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">pub</span> <span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> reverse(word: *<span class="kw">const</span> <span class="dt">c_char</span>) -&gt; *<span class="kw">const</span> <span class="dt">c_char</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">    <span class="kw">let</span> <span class="kw">mut</span> s: <span class="dt">String</span> = <span class="kw">match</span> <span class="kw">unsafe</span> <span class="op">{</span> </a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">            CStr::from_ptr(word) </a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">        <span class="op">}</span>.to_str() <span class="op">{</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">            <span class="cn">Ok</span>(s) =&gt; s,</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">            _ =&gt; <span class="kw">return</span> <span class="kw">unsafe</span> <span class="op">{</span> ::std::mem::uninitialized() <span class="op">}</span>,</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">    <span class="op">}</span>.into();</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">    ur::reverse_grapheme_clusters_in_place(&amp;<span class="kw">mut</span> s);</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">    <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span>, s);</a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">    CString::new(s).unwrap().into_raw()</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">pub</span> <span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> reverse(word: *<span class="kw">const</span> <span class="dt">c_char</span>) -&gt; *<span class="kw">const</span> <span class="dt">c_char</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">    <span class="kw">let</span> <span class="kw">mut</span> s: <span class="dt">String</span> = <span class="kw">match</span> <span class="kw">unsafe</span> <span class="op">{</span> </a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">            CStr::from_ptr(word) </a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">        <span class="op">}</span>.to_str() <span class="op">{</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">            <span class="cn">Ok</span>(s) =&gt; s,</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">            _ =&gt; <span class="kw">return</span> <span class="kw">unsafe</span> <span class="op">{</span> ::std::mem::uninitialized() <span class="op">}</span>,</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">    <span class="op">}</span>.into();</a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">    ur::reverse_grapheme_clusters_in_place(&amp;<span class="kw">mut</span> s);</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">    <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span>, s);</a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">    CString::new(s).unwrap().into_raw()</a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="op">}</span></a></code></pre></div>
 </section>
 <section id="turning-tables-part-2" class="slide level2">
 <h2>Turning tables (part 2)</h2>
@@ -180,12 +227,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>How do we call this?</li>
 </ul>
 <div class="fragment" data-fragment-index="2">
-<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">// Safely reverse a unicode string</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="dt">const</span> <span class="dt">char</span> *reverse(<span class="dt">const</span> <span class="dt">char</span> *in);</a></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="pp">#include </span><span class="im">&quot;reverse-rs.h&quot;</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="dt">void</span> main() {</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">    printf(<span class="st">&quot;&#39;%s&#39; reversed: &#39;%s&#39; </span><span class="sc">\n</span><span class="st">&quot;</span>, greeting, reverse(greeting));</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co">// Safely reverse a unicode string</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="dt">const</span> <span class="dt">char</span> *reverse(<span class="dt">const</span> <span class="dt">char</span> *in);</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="pp">#include </span><span class="im">&quot;reverse-rs.h&quot;</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="dt">void</span> main() {</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">    printf(<span class="st">&quot;&#39;%s&#39; reversed: &#39;%s&#39; </span><span class="sc">\n</span><span class="st">&quot;</span>, greeting, reverse(greeting));</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">}</a></code></pre></div>
 </div>
 <div class="fragment" data-fragment-index="3">
 <pre class="console```"><code>&#39;привет Rustfest 👩🏽‍💻&#39; reversed: &#39;💻👩🏽‍ tseftsuR тевирп&#39;</code></pre>
@@ -203,28 +250,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="memory-management" class="slide level2">
 <h2>Memory management</h2>
 <p>Put your troubles in a box ✨</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="at">#[</span>repr<span class="at">(</span>C<span class="at">)]</span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw">struct</span> MyThing <span class="op">{</span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">    <span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="op">}</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> make_thing() -&gt; <span class="dt">Box</span>&lt;MyThing&gt; <span class="op">{</span></a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">    <span class="dt">Box</span>::new(MyThing <span class="op">{</span></a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">        <span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb6-10" data-line-number="10">    <span class="op">}</span>)</a>
-<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="at">#[</span>repr<span class="at">(</span>C<span class="at">)]</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">struct</span> MyThing <span class="op">{</span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">    <span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="op">}</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> make_thing() -&gt; <span class="dt">Box</span>&lt;MyThing&gt; <span class="op">{</span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">    <span class="dt">Box</span>::new(MyThing <span class="op">{</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">        <span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">    <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="op">}</span></a></code></pre></div>
 </section>
 <section id="memory-management-part-2" class="slide level2">
 <h2>Memory management (part 2)</h2>
 <p>C:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="dt">void</span> main() {</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">    MyThing *t = make_thing();</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">    free(t);</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="dt">void</span> main() {</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">    MyThing *t = make_thing();</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">    free(t);</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">}</a></code></pre></div>
 <div class="fragment" data-fragment-index="2">
 <p>Rust:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb8-1" data-line-number="1">::std::mem::forget(thing);</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb9-1" data-line-number="1">::std::mem::forget(thing);</a></code></pre></div>
 </div>
 </section>
 <section id="creating-pretty-apis" class="slide level2">
@@ -234,37 +281,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section class="slide level2">
 
 <p>C</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb9-1" data-line-number="1">pr_mod_ctx ctx; <span class="co">// or *ctx</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="dt">int</span> ret = proj_module_init(&amp;ctx, a, b, <span class="co">/* ... */</span>);</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="cf">if</span> (ret) {</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">    <span class="co">/* Handle error explicitly */</span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5">    <span class="cf">goto</span> fail;</a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">}</a></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb10-1" data-line-number="1">ret = proj_module_function(ctx, a, b, <span class="co">/* ... */</span>);</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="cf">if</span> (ret) {</a>
-<a class="sourceLine" id="cb10-3" data-line-number="3">    <span class="co">/* Handle error explicitly */</span></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4">    <span class="cf">goto</span> fail;</a>
-<a class="sourceLine" id="cb10-5" data-line-number="5">}</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb10-1" data-line-number="1">pr_mod_ctx ctx; <span class="co">// or *ctx</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="dt">int</span> ret = proj_module_init(&amp;ctx, a, b, <span class="co">/* ... */</span>);</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="cf">if</span> (ret) {</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">    <span class="co">/* Handle error explicitly */</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">    <span class="cf">goto</span> fail;</a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">}</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb11-1" data-line-number="1">ret = proj_module_function(ctx, a, b, <span class="co">/* ... */</span>);</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="cf">if</span> (ret) {</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">    <span class="co">/* Handle error explicitly */</span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">    <span class="cf">goto</span> fail;</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">}</a></code></pre></div>
 </section>
 <section class="slide level2">
 
 <p>C++</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb11-1" data-line-number="1">MyObj obj = MyObj::create(a, b, <span class="co">/* .. */</span>);</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="cf">if</span> (obj == null) {</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">    <span class="co">/* handle errors explicitly */</span></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4">}</a></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">class</span> MyObj {</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="kw">public</span>:</a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">  MyObj() {</a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">    <span class="cf">throw</span> CantBeBotheredException();</a>
-<a class="sourceLine" id="cb12-5" data-line-number="5">  }</a>
-<a class="sourceLine" id="cb12-6" data-line-number="6">}</a>
-<a class="sourceLine" id="cb12-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="cf">try</span> {</a>
-<a class="sourceLine" id="cb12-9" data-line-number="9">    MyObj obj = <span class="kw">new</span> MyObj(a, b, <span class="co">/* .. */</span>);</a>
-<a class="sourceLine" id="cb12-10" data-line-number="10">} <span class="cf">catch</span> (CantBeBotheredException *e) {</a>
-<a class="sourceLine" id="cb12-11" data-line-number="11">    <span class="co">/* handle errors implicitly */</span></a>
-<a class="sourceLine" id="cb12-12" data-line-number="12">}</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb12-1" data-line-number="1">MyObj obj = MyObj::create(a, b, <span class="co">/* .. */</span>);</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="cf">if</span> (obj == null) {</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">    <span class="co">/* handle errors explicitly */</span></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">class</span> MyObj {</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="kw">public</span>:</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">  MyObj() {</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">    <span class="cf">throw</span> CantBeBotheredException();</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">  }</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">}</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="cf">try</span> {</a>
+<a class="sourceLine" id="cb13-9" data-line-number="9">    MyObj obj = <span class="kw">new</span> MyObj(a, b, <span class="co">/* .. */</span>);</a>
+<a class="sourceLine" id="cb13-10" data-line-number="10">} <span class="cf">catch</span> (CantBeBotheredException *e) {</a>
+<a class="sourceLine" id="cb13-11" data-line-number="11">    <span class="co">/* handle errors implicitly */</span></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12">}</a></code></pre></div>
 </section>
 <section class="slide level2">
 
@@ -313,21 +360,21 @@ _Unwind_Reason_Code _Unwind_ForcedUnwind
 <section class="slide level2">
 
 <h3 id="anyway">Anyway</h3>
-<div class="sourceCode" id="cb14"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co">/// Ok(...) or Err(...)</span></a>
-<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="kw">fn</span> foo() -&gt; <span class="dt">Result</span>&lt;T, Error&gt;;</a>
-<a class="sourceLine" id="cb14-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb14-4" data-line-number="4"><span class="co">/// Some(...) or None</span></a>
-<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="kw">fn</span> bar() -&gt; <span class="dt">Option</span>&lt;T&gt;;</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">/// Ok(...) or Err(...)</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">fn</span> foo() -&gt; <span class="dt">Result</span>&lt;T, Error&gt;;</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co">/// Some(...) or None</span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5"><span class="kw">fn</span> bar() -&gt; <span class="dt">Option</span>&lt;T&gt;;</a></code></pre></div>
 <p>How does <code>None</code> compare to <code>null</code>?</p>
 </section>
 <section class="slide level2">
 
 <h3 id="emulating-optiont">Emulating <code>Option&lt;T&gt;</code></h3>
-<div class="sourceCode" id="cb15"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">fn</span> bar() -&gt; <span class="dt">Option</span>&lt;<span class="kw">const</span> *<span class="dt">c_char</span>&gt; <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></a></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="dt">char</span> *str = bar();</a>
-<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="cf">if</span>(str == null) {</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3">    <span class="co">/* this is None */</span></a>
-<a class="sourceLine" id="cb16-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw">fn</span> bar() -&gt; <span class="dt">Option</span>&lt;<span class="kw">const</span> *<span class="dt">c_char</span>&gt; <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="dt">char</span> *str = bar();</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="cf">if</span>(str == null) {</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">    <span class="co">/* this is None */</span></a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">}</a></code></pre></div>
 </section>
 <section class="slide level2">
 
@@ -340,30 +387,30 @@ _Unwind_Reason_Code _Unwind_ForcedUnwind
 <section class="slide level2">
 
 <h3 id="so-what-about-c">So what about C?</h3>
-<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="dt">int</span> ret = some_rust_function(&amp;ctx, <span class="st">&quot;abc&quot;</span>, <span class="dv">42</span>);</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="dt">int</span> ret = some_rust_function(&amp;ctx, <span class="st">&quot;abc&quot;</span>, <span class="dv">42</span>);</a></code></pre></div>
 <p>C pointers become <code>const *c_void</code></p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
-<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> some_rust_function(</a>
-<a class="sourceLine" id="cb18-3" data-line-number="3">    ctx: <span class="kw">const</span> *<span class="dt">c_void</span>, </a>
-<a class="sourceLine" id="cb18-4" data-line-number="4">    s: <span class="kw">const</span> *<span class="dt">c_char</span>, </a>
-<a class="sourceLine" id="cb18-5" data-line-number="5">    num: uint32_t)</a>
-<a class="sourceLine" id="cb18-6" data-line-number="6"><span class="op">{</span></a>
-<a class="sourceLine" id="cb18-7" data-line-number="7">    <span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb18-8" data-line-number="8"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> some_rust_function(</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3">    ctx: <span class="kw">const</span> *<span class="dt">c_void</span>, </a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">    s: <span class="kw">const</span> *<span class="dt">c_char</span>, </a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">    num: uint32_t)</a>
+<a class="sourceLine" id="cb19-6" data-line-number="6"><span class="op">{</span></a>
+<a class="sourceLine" id="cb19-7" data-line-number="7">    <span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb19-8" data-line-number="8"><span class="op">}</span></a></code></pre></div>
 </section>
 <section class="slide level2">
 
 <p>But: <code>c_void</code> just refers to a Rust type, right?</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
-<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> some_rust_function(</a>
-<a class="sourceLine" id="cb19-3" data-line-number="3">   <span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="op">{</span></a>
-<a class="sourceLine" id="cb19-5" data-line-number="5">    <span class="kw">let</span> ctx: &amp;<span class="kw">mut</span> MyState = <span class="kw">unsafe</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb19-6" data-line-number="6">        &amp;<span class="kw">mut</span> *ctx <span class="kw">as</span> &amp;<span class="kw">mut</span> MyState</a>
-<a class="sourceLine" id="cb19-7" data-line-number="7">    <span class="op">}</span>;</a>
-<a class="sourceLine" id="cb19-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb19-9" data-line-number="9">    ctx.some_mut_function();</a>
-<a class="sourceLine" id="cb19-10" data-line-number="10"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> some_rust_function(</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">   <span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4"><span class="op">{</span></a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">    <span class="kw">let</span> ctx: &amp;<span class="kw">mut</span> MyState = <span class="kw">unsafe</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6">        &amp;<span class="kw">mut</span> *ctx <span class="kw">as</span> &amp;<span class="kw">mut</span> MyState</a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">    <span class="op">}</span>;</a>
+<a class="sourceLine" id="cb20-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb20-9" data-line-number="9">    ctx.some_mut_function();</a>
+<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="op">}</span></a></code></pre></div>
 </section>
 <section class="slide level2">
 

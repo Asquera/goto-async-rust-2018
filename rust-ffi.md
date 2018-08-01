@@ -1,26 +1,25 @@
 ---
 title: Rust  💖  C/C++
 subtitle: A memory-violating love story
+output:
+  revealjs::revealjs_presentation:
+    background_transition: None
 ---
 
-## Who here
+## `whoami(1)`
 
-> * has used `C/C++` in `Rust` code?
-> * would call themselves a C developer?
-> * would call themselves a C++ developer?
+Katharina Fey (`@spacekookie`)
 
----
+<br/>
 
-## `whoami`
+Thanks to
 
-* Katharina Fey
-* @spacekookie
-* FOSS contributer; BDFL of...something
-* Consultant @ asquera
+* My company **Ferris Systems**
+* Mozilla 🧡
 
 ---
 
-## `whoami`
+## `whoami(2)`
 
 * Contributer to the CLI-WG
 * Author of (too) many `use[ful|less]` crates
@@ -28,7 +27,7 @@ subtitle: A memory-violating love story
 
 ---
 
-## `whoami`
+## `whoami(3)`
 
 * Core contributer to `qaul.net`
   * ~500kloc of C99
@@ -36,11 +35,105 @@ subtitle: A memory-violating love story
 
 ---
 
+## Why
+
+<br/>
+
+Rust promises easy FFI to C code
+
+What does this mean?
+
+<div class="fragment" data-fragment-index="2">
+What do we *want* it to mean?
+</div>
+
+---
+
+## Question time
+
+<br/>
+
+Who here
+
+> * has used `C/C++` in `Rust` code?
+> * would call themselves a C developer?
+> * would call themselves a C++ developer?
+
+---
+
+## ABI
+
+Application Binary Interface
+
+<br/>
+
+* Defines the function signature (in binary)
+* Much like an API but for linkers
+
+---
+
+## ABI
+
+```rust
+extern "C" {
+    // ...
+}
+
+#[repr(C)]
+struct Foo { /* ... */ }
+
+#[repr(C)]
+enum Bar { /* ... */ }
+
+union OhYea { /* unions are just cool by default */ }
+```
+
+---
+
+## ABI
+
+<img src="images/ABIs.png"  height=545px>
+
+---
+
+## C code from Rust
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+---
+
 ## Boring FFi
 
-- Declare some headers to native code
-- Use `unsafe` a lot
-- Make data C-compatible
+<div class="fragment" data-fragment-index="2">
+
+* Bind to native API with `extern` functions
+* Wrap function calls in `unsafe`
+* Make data C-compatible
+</div>
+
+<div class="fragment" data-fragment-index="3">
 
 ```rust
 extern "C" {
@@ -55,6 +148,8 @@ unsafe fn danger_zone<'a>(value: &'a str) -> &'a str {
     ).to_str()
 }
 ```
+
+</div>
 
 ---
 
