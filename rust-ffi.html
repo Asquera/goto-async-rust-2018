@@ -109,7 +109,7 @@
 <p><br/></p>
 <p>Thanks to</p>
 <ul>
-<li>My company <strong>Ferris Systems</strong></li>
+<li>My employer <strong>Ferris Systems</strong></li>
 <li>Mozilla 🧡</li>
 </ul>
 <p><br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/></p>
@@ -326,6 +326,14 @@
 <section id="ermbbash" class="slide level2">
 <h2>Erm…b…bash?</h2>
 </section>
+<section id="reducing-library-sizes" class="slide level2">
+<h2>Reducing library sizes</h2>
+<ul>
+<li><code>-C prefer-dynamic</code></li>
+<li>Automatic symbol stripping</li>
+<li>Using the system allocator</li>
+</ul>
+</section>
 <section id="memory-management" class="slide level2">
 <h2>Memory management</h2>
 </section>
@@ -375,7 +383,7 @@
 <a class="sourceLine" id="cb16-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb16-5" data-line-number="5">    printf(<span class="st">&quot;%s&quot;</span>, t.value); <span class="co">// kaboom!</span></a>
 <a class="sourceLine" id="cb16-6" data-line-number="6">}</a></code></pre></div>
-<p><br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/></p>
+<p><br/> <br/></p>
 </section>
 <section class="slide level2">
 
@@ -511,162 +519,122 @@
 <a class="sourceLine" id="cb27-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb27-4" data-line-number="4">set_errno(<span class="dv">12</span>);</a></code></pre></div>
 </section>
-<section class="slide level2">
-
-<p>C</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb28-1" data-line-number="1">pr_mod_ctx ctx; <span class="co">// or *ctx</span></a>
-<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="dt">int</span> ret = proj_module_init(&amp;ctx, a, b, <span class="co">/* ... */</span>);</a>
-<a class="sourceLine" id="cb28-3" data-line-number="3"><span class="cf">if</span> (ret) {</a>
-<a class="sourceLine" id="cb28-4" data-line-number="4">    <span class="co">/* Handle error explicitly */</span></a>
-<a class="sourceLine" id="cb28-5" data-line-number="5">    <span class="cf">goto</span> fail;</a>
-<a class="sourceLine" id="cb28-6" data-line-number="6">}</a></code></pre></div>
-<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb29-1" data-line-number="1">ret = proj_module_function(ctx, a, b, <span class="co">/* ... */</span>);</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="cf">if</span> (ret) {</a>
-<a class="sourceLine" id="cb29-3" data-line-number="3">    <span class="co">/* Handle error explicitly */</span></a>
-<a class="sourceLine" id="cb29-4" data-line-number="4">    <span class="cf">goto</span> fail;</a>
-<a class="sourceLine" id="cb29-5" data-line-number="5">}</a></code></pre></div>
+<section id="errors-in-c-2" class="slide level2">
+<h2>Errors in C++</h2>
+<p>Well…</p>
 </section>
-<section class="slide level2">
-
-<p>C++</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb30-1" data-line-number="1">MyObj obj = MyObj::create(a, b, <span class="co">/* .. */</span>);</a>
-<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="cf">if</span> (obj == null) {</a>
-<a class="sourceLine" id="cb30-3" data-line-number="3">    <span class="co">/* handle errors explicitly */</span></a>
-<a class="sourceLine" id="cb30-4" data-line-number="4">}</a></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">class</span> MyObj {</a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw">public</span>:</a>
-<a class="sourceLine" id="cb31-3" data-line-number="3">  MyObj() {</a>
-<a class="sourceLine" id="cb31-4" data-line-number="4">    <span class="cf">throw</span> CantBeBotheredException();</a>
-<a class="sourceLine" id="cb31-5" data-line-number="5">  }</a>
-<a class="sourceLine" id="cb31-6" data-line-number="6">}</a>
-<a class="sourceLine" id="cb31-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb31-8" data-line-number="8"><span class="cf">try</span> {</a>
-<a class="sourceLine" id="cb31-9" data-line-number="9">    MyObj obj = <span class="kw">new</span> MyObj(a, b, <span class="co">/* .. */</span>);</a>
-<a class="sourceLine" id="cb31-10" data-line-number="10">} <span class="cf">catch</span> (CantBeBotheredException *e) {</a>
-<a class="sourceLine" id="cb31-11" data-line-number="11">    <span class="co">/* handle errors implicitly */</span></a>
-<a class="sourceLine" id="cb31-12" data-line-number="12">}</a></code></pre></div>
+<section id="errors-in-c-3" class="slide level2">
+<h2>Errors in C++</h2>
+<p>Wrap C-errors in exception throwing code</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c++"><code class="sourceCode cpp"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="at">extern</span> <span class="st">&quot;C&quot;</span> {</a>
+<a class="sourceLine" id="cb28-2" data-line-number="2">    <span class="pp">#include </span><span class="im">&quot;cbindgen-made-this.h&quot;</span></a>
+<a class="sourceLine" id="cb28-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb28-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb28-5" data-line-number="5"><span class="kw">class</span> MyRustModule {</a>
+<a class="sourceLine" id="cb28-6" data-line-number="6">    <span class="dt">void</span> do_something_dangerous() {</a>
+<a class="sourceLine" id="cb28-7" data-line-number="7">        <span class="kw">auto</span> ret = do_rust_things();</a>
+<a class="sourceLine" id="cb28-8" data-line-number="8">        <span class="cf">if</span>(ret) {</a>
+<a class="sourceLine" id="cb28-9" data-line-number="9">            <span class="cf">throw</span> CorporateExceptionSeven(ret);</a>
+<a class="sourceLine" id="cb28-10" data-line-number="10">        }</a>
+<a class="sourceLine" id="cb28-11" data-line-number="11">    }</a>
+<a class="sourceLine" id="cb28-12" data-line-number="12">}</a></code></pre></div>
+</section>
+<section id="errors-in-c-4" class="slide level2">
+<h2>Errors in C++</h2>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c++"><code class="sourceCode cpp"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">namespace</span> Rust {</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2">    <span class="at">extern</span> <span class="st">&quot;C&quot;</span> {</a>
+<a class="sourceLine" id="cb29-3" data-line-number="3">        <span class="pp">#include </span><span class="im">&quot;my-rust-header.h&quot;</span></a>
+<a class="sourceLine" id="cb29-4" data-line-number="4">    }</a>
+<a class="sourceLine" id="cb29-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb29-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb29-7" data-line-number="7"><span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb29-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb29-9" data-line-number="9"><span class="kw">auto</span> ret = Rust::do_something_dangerous();</a>
+<a class="sourceLine" id="cb29-10" data-line-number="10"><span class="cf">if</span>(ret) <span class="cf">throw</span> CorporteExceptionEight(ret);</a></code></pre></div>
 </section>
 <section class="slide level2">
 
 <h3 id="can-you-throw-a-c-exception-from-rust">Can you throw a <code>C++</code> exception from Rust?</h3>
 </section>
-<section class="slide level2">
-
-<h3 id="section">😱</h3>
+<section id="section" class="slide level2">
+<h2>😱</h2>
 </section>
-<section class="slide level2">
-
-<h3 id="well">Well</h3>
+<section id="well" class="slide level2">
+<h2>Well</h2>
 </section>
-<section class="slide level2">
-
-<h3 id="that-depends">That depends…</h3>
+<section id="kinda" class="slide level2">
+<h2>Kinda…</h2>
+</section>
+<section id="exceptions" class="slide level2">
+<h2>Exceptions</h2>
 <div class="fragment" data-fragment-index="2">
-<ul>
-<li>An exception is a setjmp/ longjmp pair on stack</li>
-<li>Compiler swaps <code>throw</code> keyword with <code>libc++</code> calls</li>
-<li>Those unwind the stack to find a <code>setjmp</code> marker</li>
-<li>Resuming execution from that point</li>
-</ul>
+<p><code>try</code> - <code>throw</code> – <code>catch</code></p>
+</div>
+<div class="fragment" data-fragment-index="3">
+<p><code>try</code> creates a “landing pad”</p>
+</div>
+<div class="fragment" data-fragment-index="4">
+<p><code>throw</code> walks up the stack</p>
+</div>
+<div class="fragment" data-fragment-index="5">
+<p>Then calls <code>catch</code></p>
+</div>
+</section>
+<section id="try" class="slide level2">
+<h2><code>try</code></h2>
+<p>Landing pad determines how to continue</p>
+</section>
+<section id="catch" class="slide level2">
+<h2><code>catch</code></h2>
+<p>But which one? Filter!</p>
+</section>
+<section id="throw" class="slide level2">
+<h2>Throw</h2>
+<p>Replaced with calls into <code>libc++</code></p>
+</section>
+<section id="this-is-a-talk-about-rust" class="slide level2">
+<h2>This is a talk about Rust</h2>
+</section>
+<section id="exceptions.rs" class="slide level2">
+<h2>exceptions.rs</h2>
+<div class="sourceCode" id="cb30"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">extern</span> <span class="kw">crate</span> exception_rs <span class="kw">as</span> exception;</a>
+<a class="sourceLine" id="cb30-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="kw">pub</span> <span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> oh_no() <span class="op">{</span></a>
+<a class="sourceLine" id="cb30-4" data-line-number="4">    exception::throw(<span class="dv">5</span>, <span class="st">&quot;A horrible has occured!&quot;</span>);</a>
+<a class="sourceLine" id="cb30-5" data-line-number="5"><span class="op">}</span></a></code></pre></div>
+<p><small>Oh god please don’t use this! (get it @ <em>cra.tw/exception-rs</em>)</small></p>
+</section>
+<section class="slide level2">
+
+<p>No <code>libc++</code> bindings in Rust</p>
+<div class="fragment" data-fragment-index="2">
+<p>Invoke apropriate functions via <code>C</code> shim layer</p>
+</div>
+<div class="fragment" data-fragment-index="3">
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">extern</span> <span class="dt">void</span> *__cxa_allocate_exception(<span class="dt">size_t</span> thrown_size);</a>
+<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw">extern</span> <span class="dt">void</span> __cxa_throw(<span class="dt">void</span> *e, <span class="dt">void</span> **t, <span class="dt">void</span> (*dest)(<span class="dt">void</span> *));</a></code></pre></div>
+<p>functions are linked when C++ project is compiled</p>
 </div>
 </section>
 <section class="slide level2">
 
-<h3 id="but-how">But how?</h3>
+<p>Proof I actually did this</p>
+</section>
+<section id="vtables" class="slide level2">
+<h2>VTables</h2>
 </section>
 <section class="slide level2">
 
-<h3 id="exception-abi">Exception ABI</h3>
-<pre><code>typedef _Unwind_Reason_Code (*_Unwind_Stop_Fn)
-    (int version,
-        _Unwind_Action actions,
-        uint64 exceptionClass,
-        struct _Unwind_Exception *exceptionObject,
-        struct _Unwind_Context *context,
-        void *stop_parameter );
-
-_Unwind_Reason_Code _Unwind_ForcedUnwind
-    ( struct _Unwind_Exception *exception_object,
-        _Unwind_Stop_Fn stop,
-        void *stop_parameter );</code></pre>
 </section>
-<section class="slide level2">
-
-<h3 id="anyway">Anyway</h3>
-<div class="sourceCode" id="cb33"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co">/// Ok(...) or Err(...)</span></a>
-<a class="sourceLine" id="cb33-2" data-line-number="2"><span class="kw">fn</span> foo() -&gt; <span class="dt">Result</span>&lt;T, Error&gt;;</a>
-<a class="sourceLine" id="cb33-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="co">/// Some(...) or None</span></a>
-<a class="sourceLine" id="cb33-5" data-line-number="5"><span class="kw">fn</span> bar() -&gt; <span class="dt">Option</span>&lt;T&gt;;</a></code></pre></div>
-<p>How does <code>None</code> compare to <code>null</code>?</p>
-</section>
-<section class="slide level2">
-
-<h3 id="emulating-optiont">Emulating <code>Option&lt;T&gt;</code></h3>
-<div class="sourceCode" id="cb34"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw">fn</span> bar() -&gt; <span class="dt">Option</span>&lt;<span class="kw">const</span> *<span class="dt">c_char</span>&gt; <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></a></code></pre></div>
-<div class="sourceCode" id="cb35"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="dt">char</span> *str = bar();</a>
-<a class="sourceLine" id="cb35-2" data-line-number="2"><span class="cf">if</span>(str == null) {</a>
-<a class="sourceLine" id="cb35-3" data-line-number="3">    <span class="co">/* this is None */</span></a>
-<a class="sourceLine" id="cb35-4" data-line-number="4">}</a></code></pre></div>
-</section>
-<section class="slide level2">
-
-<h3 id="emulating-resultte">Emulating <code>Result&lt;T,E&gt;</code></h3>
+<section id="thank-you-for-real" class="slide level2">
+<h2>Thank you (for real)</h2>
+<p>Follow me on twitter <strong><code>@spacekookie</code></strong></p>
+<p>Or: <strong><code>kookie@spacekookie.de</code></strong></p>
+<p><br/></p>
 <ul>
-<li>This is a lot harder</li>
-<li>There are <code>C++</code> implementations of <code>Result</code></li>
-</ul>
-</section>
-<section class="slide level2">
-
-<h3 id="so-what-about-c">So what about C?</h3>
-<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="dt">int</span> ret = some_rust_function(&amp;ctx, <span class="st">&quot;abc&quot;</span>, <span class="dv">42</span>);</a></code></pre></div>
-<p>C pointers become <code>const *c_void</code></p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
-<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> some_rust_function(</a>
-<a class="sourceLine" id="cb37-3" data-line-number="3">    ctx: <span class="kw">const</span> *<span class="dt">c_void</span>, </a>
-<a class="sourceLine" id="cb37-4" data-line-number="4">    s: <span class="kw">const</span> *<span class="dt">c_char</span>, </a>
-<a class="sourceLine" id="cb37-5" data-line-number="5">    num: uint32_t)</a>
-<a class="sourceLine" id="cb37-6" data-line-number="6"><span class="op">{</span></a>
-<a class="sourceLine" id="cb37-7" data-line-number="7">    <span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb37-8" data-line-number="8"><span class="op">}</span></a></code></pre></div>
-</section>
-<section class="slide level2">
-
-<p>But: <code>c_void</code> just refers to a Rust type, right?</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
-<a class="sourceLine" id="cb38-2" data-line-number="2"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> some_rust_function(</a>
-<a class="sourceLine" id="cb38-3" data-line-number="3">   <span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb38-4" data-line-number="4"><span class="op">{</span></a>
-<a class="sourceLine" id="cb38-5" data-line-number="5">    <span class="kw">let</span> ctx: &amp;<span class="kw">mut</span> MyState = <span class="kw">unsafe</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb38-6" data-line-number="6">        &amp;<span class="kw">mut</span> *ctx <span class="kw">as</span> &amp;<span class="kw">mut</span> MyState</a>
-<a class="sourceLine" id="cb38-7" data-line-number="7">    <span class="op">}</span>;</a>
-<a class="sourceLine" id="cb38-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb38-9" data-line-number="9">    ctx.some_mut_function();</a>
-<a class="sourceLine" id="cb38-10" data-line-number="10"><span class="op">}</span></a></code></pre></div>
-</section>
-<section class="slide level2">
-
-<h3 id="generating-headers">Generating headers</h3>
-<ul>
-<li><code>cbindgen</code> generates C-headers from Rust code</li>
-<li>Can be hooked into the build-pipline
-<ul>
-<li>Don’t keep headers in the repo – generate them!</li>
-</ul></li>
-</ul>
-</section>
-<section class="slide level2">
-
-<h3 id="some-thoughts-on-linking">Some thoughts on linking</h3>
-<ul>
-<li>Rust links statically by default</li>
-<li>Each <code>foo.so</code> would be several MB big!</li>
-<li><code>-C prefer-dynamic</code> to the rescue
-<ul>
-<li>Dynamically link libraries</li>
-<li>Requires you to link them together yourself in your build pipeline</li>
-</ul></li>
+<li>💚 My employer: <strong>Ferris Systems</strong></li>
+<li>🧡 Mozilla</li>
+<li>❤ All of you</li>
 </ul>
 </section>
     </div>

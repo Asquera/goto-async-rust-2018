@@ -12,7 +12,7 @@ Katharina Fey (`@spacekookie`)
 
 Thanks to
 
-* My company **Ferris Systems**
+* My employer **Ferris Systems**
 * Mozilla 🧡
 
 <br/>
@@ -353,6 +353,14 @@ l = shared_library("reverso", "reverso.rs", install : true)
 
 ---
 
+## Reducing library sizes
+
+* `-C prefer-dynamic`
+* Automatic symbol stripping
+* Using the system allocator
+
+---
+
 ## Memory management
 
 ---
@@ -429,13 +437,6 @@ void main() {
 
 <br/>
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
 ---
 
@@ -480,8 +481,8 @@ pub struct rvalue_t {
 
 <div class="fragment" data-fragment-index="2">
 
-C
 
+C
 ```C
 struct rvalue_t {
     void         *ignore_me;
@@ -612,49 +613,46 @@ set_errno(12);
 
 ---
 
-C
+## Errors in C++
 
-```C
-pr_mod_ctx ctx; // or *ctx
-int ret = proj_module_init(&ctx, a, b, /* ... */);
-if (ret) {
-    /* Handle error explicitly */
-    goto fail;
+Well...
+
+---
+
+## Errors in C++
+
+Wrap C-errors in exception throwing code
+
+```C++
+extern "C" {
+    #include "cbindgen-made-this.h"
 }
-```
 
-```C
-ret = proj_module_function(ctx, a, b, /* ... */);
-if (ret) {
-    /* Handle error explicitly */
-    goto fail;
+class MyRustModule {
+    void do_something_dangerous() {
+        auto ret = do_rust_things();
+        if(ret) {
+            throw CorporateExceptionSeven(ret);
+        }
+    }
 }
 ```
 
 ---
 
-C++
+## Errors in C++
 
-```Cpp
-MyObj obj = MyObj::create(a, b, /* .. */);
-if (obj == null) {
-    /* handle errors explicitly */
-}
-```
-
-```Cpp
-class MyObj {
-public:
-  MyObj() {
-    throw CantBeBotheredException();
-  }
+```C++
+namespace Rust {
+    extern "C" {
+        #include "my-rust-header.h"
+    }
 }
 
-try {
-    MyObj obj = new MyObj(a, b, /* .. */);
-} catch (CantBeBotheredException *e) {
-    /* handle errors implicitly */
-}
+/* ... */
+
+auto ret = Rust::do_something_dangerous();
+if(ret) throw CorporteExceptionEight(ret);
 ```
 
 ---
@@ -663,136 +661,112 @@ try {
 
 ---
 
-### 😱
+## 😱
 
 ---
 
-### Well
+## Well
 
 ---
 
-### That depends...
+## Kinda...
+
+---
+
+## Exceptions
 
 <div class="fragment" data-fragment-index="2">
-* An exception is a setjmp/ longjmp pair on stack
-* Compiler swaps `throw` keyword with `libc++` calls
-* Those unwind the stack to find a `setjmp` marker
-* Resuming execution from that point
+`try` - `throw` – `catch`
+</div>
+
+<div class="fragment" data-fragment-index="3">
+`try` creates a "landing pad"
+</div>
+
+<div class="fragment" data-fragment-index="4">
+`throw` walks up the stack
+</div>
+
+<div class="fragment" data-fragment-index="5">
+Then calls `catch`
 </div>
 
 ---
 
-### But how?
+## `try`
 
-
----
-
-### Exception ABI
-
-```
-typedef _Unwind_Reason_Code (*_Unwind_Stop_Fn)
-    (int version,
-        _Unwind_Action actions,
-        uint64 exceptionClass,
-        struct _Unwind_Exception *exceptionObject,
-        struct _Unwind_Context *context,
-        void *stop_parameter );
-
-_Unwind_Reason_Code _Unwind_ForcedUnwind
-    ( struct _Unwind_Exception *exception_object,
-        _Unwind_Stop_Fn stop,
-        void *stop_parameter );
-```
+Landing pad determines how to continue
 
 ---
 
-### Anyway
+## `catch`
+
+But which one? Filter! 
+
+---
+
+
+## Throw
+
+Replaced with calls into `libc++`
+
+---
+
+## This is a talk about Rust
+
+---
+
+## exceptions.rs
 
 ```rust
-/// Ok(...) or Err(...)
-fn foo() -> Result<T, Error>;
+extern crate exception_rs as exception;
 
-/// Some(...) or None
-fn bar() -> Option<T>;
-```
-
-How does `None` compare to `null`?
-
----
-
-### Emulating `Option<T>`
-
-```rust
-fn bar() -> Option<const *c_char> { /* ... */ }
-```
-
-```Cpp
-char *str = bar();
-if(str == null) {
-    /* this is None */
+pub extern "C" fn oh_no() {
+    exception::throw(5, "A horrible has occured!");
 }
 ```
 
----
-
-### Emulating `Result<T,E>`
-
-* This is a lot harder
-* There are `C++` implementations of `Result`
+<small>Oh god please don't use this! (get it @ *cra.tw/exception-rs*)</small>
 
 ---
 
-### So what about C?
+No `libc++` bindings in Rust
 
+<div class="fragment" data-fragment-index="2">
+Invoke apropriate functions via `C` shim layer
+</div>
+
+<div class="fragment" data-fragment-index="3">
 ```C
-int ret = some_rust_function(&ctx, "abc", 42);
+extern void *__cxa_allocate_exception(size_t thrown_size);
+extern void __cxa_throw(void *e, void **t, void (*dest)(void *));
 ```
 
-C pointers become `const *c_void`
-
-```rust
-#[no_mangle]
-extern "C" fn some_rust_function(
-    ctx: const *c_void, 
-    s: const *c_char, 
-    num: uint32_t)
-{
-    /* ... */
-}
-
-```
-
---- 
-
-But: `c_void` just refers to a Rust type, right?
-
-```rust
-#[no_mangle]
-extern "C" fn some_rust_function(
-   /* ... */
-{
-    let ctx: &mut MyState = unsafe {
-        &mut *ctx as &mut MyState
-    };
-
-    ctx.some_mut_function();
-}
-```
+functions are linked when C++ project is compiled
+</div>
 
 ---
 
-### Generating headers
-
-* `cbindgen` generates C-headers from Rust code
-* Can be hooked into the build-pipline
-  * Don't keep headers in the repo – generate them!
+Proof I actually did this
 
 ---
 
-### Some thoughts on linking
+## VTables
 
-* Rust links statically by default
-* Each `foo.so` would be several MB big!
-* `-C prefer-dynamic` to the rescue
-  * Dynamically link libraries
-  * Requires you to link them together yourself in your build pipeline
+---
+
+
+
+---
+
+## Thank you (for real)
+
+Follow me on twitter **`@spacekookie`**
+
+Or: **`kookie@spacekookie.de`**
+
+<br/>
+
+* 💚 My employer: **Ferris Systems**
+* 🧡 Mozilla
+* ❤ All of you
