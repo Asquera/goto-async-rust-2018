@@ -1,7 +1,7 @@
 extern crate unicode_reverse as ur;
 
 use std::ffi::{CStr, CString};
-use std::os::raw::{c_char, c_uint};
+use std::os::raw::{c_char, c_uint, c_void};
 
 /// Safely reverse a utf-8 string
 #[no_mangle]
@@ -15,13 +15,36 @@ pub extern "C" fn reverse(word: *const c_char) -> *const c_char {
     CString::new(s).unwrap().into_raw()
 }
 
+#[allow(unused, non_camel_case_types)]
+pub struct server_t {
+    port: u32,
+}
+
 #[no_mangle]
+pub extern "C" fn initialise(ctx: *mut *mut c_void, port: c_uint) -> c_uint {
+    let port: u32 = port;
+    if port <= 1024 {
+        return 2;
+    }
 
-pub extern "C" fn reverse_inplace(string: *mut c_char) -> u32 {
-    let mut cstr: &mut str = unsafe { CStr::from_ptr(string) }.as_mut_ptr().unwrap();
-    ur::reverse_grapheme_clusters_in_place(&mut cstr);
-    
-    // let mut s: String = unsafe { CString::from_raw(string).into_string() }.unwrap();
+    let server = Box::new(server_t { port });
+    unsafe { *ctx = Box::into_raw(server) as *mut c_void };
+    return 0;
+}
 
-    0
+use std::any::Any;
+
+#[allow(unused, non_camel_case_types)]
+#[repr(C)]
+pub struct rvalue_t {
+    thing: Box<Option<Box<Any>>>,
+    code: u32,
+}
+
+#[no_mangle]
+pub extern "C" fn myfunction() -> rvalue_t {
+    rvalue_t {
+        thing: Box::new(None),
+        code: 666,
+    }
 }

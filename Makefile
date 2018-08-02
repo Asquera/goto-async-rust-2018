@@ -2,7 +2,8 @@ slides:
 	@pandoc rust-ffi.md \
 	--to revealjs \
 	--output rust-ffi.html \
-	-V revealjs-url=http://revealjs.com \
+	--template template/index.html \
+	-V revealjs-url=template \
 	-V theme=moon \
 	-V progress=true \
 	-V slideNumber=true \
