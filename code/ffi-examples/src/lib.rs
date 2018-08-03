@@ -36,15 +36,15 @@ use std::any::Any;
 
 #[allow(unused, non_camel_case_types)]
 #[repr(C)]
-pub struct rvalue_t {
-    thing: Box<Option<Box<Any>>>,
+pub struct rvalue_t<T> {
+    thing: Box<Option<T>>,
     code: u32,
 }
 
 #[no_mangle]
-pub extern "C" fn myfunction() -> rvalue_t {
+pub extern "C" fn myfunction() -> rvalue_t<u32> {
     rvalue_t {
-        thing: Box::new(None),
-        code: 666,
+        thing: Box::new(Some(42)),
+        code: 0,
     }
 }

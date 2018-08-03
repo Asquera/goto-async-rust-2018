@@ -81,26 +81,28 @@ So in C it's kinda easy. Use one of the patterns outlined earlier about errors
 
 So what about C++? Can we pretend to be a C++ module that happens to be called via some C code?
 
-Well...
+Wrap Rust/C API in C++ objects via RAII. Generally build a small abstraction over Rust layer. You can also use namespaces to do the same.
+
+So...this has all been very sensible and I hope you've learned something. There's one last thing I want to talk about, something a bit more silly.
+
+Let's answer this question, shall we?
+
+> Can you throw C++ exceptions from Rust?
+
+(hopefully some will laugh or react in any other way)
+
+Well...kinda. First we have to understand how C++ exceptions work.
+
+Try creats a landing pad which contains information about how the application "flows" in case it is encountered (either via an exception or via normal flow of operation).
+
+Catch blocks use filters to call the apropriate block.
+
+
+
+## Things to work out
 
 Not quite, but: create a normal C API as you would. Then dynamically load the object, 
 map C++ class functions to your Rust functions via a vtable and you've almost
 got the same thing. (almost)
 
 (Actually don't! It works, but it's very unstable and not reliable)
-
-Much better: wrap your Rust/C API in C++ objects via RAII.
-
-Next:
-
-Can you throw C++ exceptions from Rust?
-
-😱
-
-Well...
-
-Kinda?!
-
-`try`/`throw` keyword is replaced by the compiler setjmp/longjmp (kinda)
-Calls into libc++ can be made from Rust
-It works (kinda) – lots of undefined behaviour

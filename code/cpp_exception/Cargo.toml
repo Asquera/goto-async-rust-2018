@@ -2,5 +2,11 @@
 name = "cpp_exception"
 version = "0.1.0"
 authors = ["Katharina Fey <kookie@spacekookie.de>"]
+build = "build.rs"
 
-[dependencies]
+[lib]
+name = "exceptionrs"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+gcc = "*"

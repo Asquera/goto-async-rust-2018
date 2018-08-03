@@ -8,41 +8,45 @@ transition: fade
 
 Katharina Fey (`@spacekookie`)
 
-<br/>
+* Active FOSS developer
+* Hobbyist hardware maker
+* Doesn't take enough breaks from coding
 
-Thanks to
+<!-- <br/> -->
 
-* My employer **Ferris Systems**
-* Mozilla 🧡
+<!-- Thanks to
 
+* My employer **Ferrous Systems**
+* Mozilla 🧡 -->
+
+<!-- <br/>
 <br/>
 <br/>
+<br/> -->
+<!-- <br/>
 <br/>
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<br/> -->
 
 ---
 
 ## `whoami(2)`
 
-<br/>
+I do Rust things!
 
-
-* Contributer to the CLI-WG
+* Core contributer to the CLI-WG
 * Author of (too) many `use[ful|less]` crates
-* Hobbyist hardware maker
+* Member of `berlin.rs`
 
+
+<!-- <br/>
 <br/>
 <br/>
+<br/> -->
+<!-- <br/>
 <br/>
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<br/> -->
 
 ---
 
@@ -50,19 +54,18 @@ Thanks to
 
 <br/>
 
-
 * Core contributer to `qaul.net`
   * ~500kloc of C99
   * Primary inspiration for this talk
 
+<!-- <br/>
 <br/>
 <br/>
+<br/> -->
+<!-- <br/>
 <br/>
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<br/> -->
 
 ---
 
@@ -70,13 +73,9 @@ Thanks to
 
 <br/>
 
-Rust promises easy FFI to C code
+Rust promises efficient FFI to C code
 
 What does this mean?
-
-<div class="fragment" data-fragment-index="2">
-What do we *want* it to mean?
-</div>
 
 ---
 
@@ -86,6 +85,7 @@ What do we *want* it to mean?
 
 Who here
 
+> * BONUS: has worked with Rust?
 > * has used `C/C++` in `Rust` code?
 > * would call themselves a C developer?
 > * would call themselves a C++ developer?
@@ -94,12 +94,22 @@ Who here
 
 ## ABI
 
-Application Binary Interface
+Application _Binary_ Interface
 
 <br/>
 
-* Defines the function signature (in binary)
+* Defines the function signature & types
 * Much like an API but for linkers
+
+---
+
+## ABI
+
+An example of a not very good ABI
+
+<small>Function which takes one parameter which is a 32-bit int</small>
+
+![](images/abi.png)
 
 ---
 
@@ -131,7 +141,8 @@ Let's talk about stability
 
 > * Rust ABI is *not* stable
 > * Neither is C++
-> * We use C ABI because it's stable
+> * C doesn't _have_ an ABI
+>   * The operating system does
 
 ---
 
@@ -260,16 +271,16 @@ const char *reverse(const char *in);
 Integration into your existing build system
 
 ```C
-cmake_minimum_required(VERSION 3.11)
 execute_process(COMMAND cargo build --release
                 WORKING_DIRECTORY reverso)
 
 link_directories("reverso/target/release/")
-add_executable(reverse
+
+add_executable(myapp
     main.c
     reverso.h)
 
-target_link_libraries(reverse reverso)
+target_link_libraries(myapp reverso)
 ```
 
 ---
@@ -330,6 +341,17 @@ Don't write headers yourself. Use `cbindgen`
 
 * Like bindgen, but in reverse
 * Can generate `.h` files at compile-time
+
+<br/>
+
+<div class="fragment" data-fragment-index="2">
+
+### Bindgen Miniconf
+
+* 8th August @ Mozilla Berlin
+* https://berlin.rs
+
+</div>
 
 ---
 
@@ -456,14 +478,23 @@ extern "C" fn make_thing() -> Box<MyThing> {
 ---
 
 ```rust
-enum Result<T, E> { /* ... */ }
-enum Option<T> { /* ... */ }
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
 ```
 
 ```rust
-fn connect(&mut self) -> Result<Connect, Error>;
-fn client(&self) -> Option<&Client>;
+enum Option<T> {
+    Some(T),
+    None,
+}
 ```
+
+---
+
+> * Errors in C
+> * Errors in C++
 
 ---
 
@@ -471,16 +502,13 @@ Emulate `Result<T,E>` with a structure
 
 ```rust
 #[repr(C)]
-pub struct rvalue_t {
-    thing: Box<Option<Box<Any>>>, // A pointer to something 
-                                  //  that might contain a 
-                                  //   pointer to anything
+pub struct rvalue_t<T> {
+    thing: Box<Option<T>>,
     code: u32,
 }
 ```
 
 <div class="fragment" data-fragment-index="2">
-
 
 C
 ```C
@@ -500,11 +528,6 @@ if (val.code) {
     // Handle errors
 }
 ```
-
----
-
-> * Errors in C
-> * Errors in C++
 
 ---
 
@@ -631,9 +654,7 @@ extern "C" {
 class MyRustModule {
     void do_something_dangerous() {
         auto ret = do_rust_things();
-        if(ret) {
-            throw CorporateExceptionSeven(ret);
-        }
+        if(ret) throw CorporateExceptionSeven(ret);
     }
 }
 ```
@@ -645,15 +666,17 @@ class MyRustModule {
 ```C++
 namespace Rust {
     extern "C" {
-        #include "my-rust-header.h"
+        #include "no_i_made_this.h"
     }
 }
 
 /* ... */
 
 auto ret = Rust::do_something_dangerous();
-if(ret) throw CorporteExceptionEight(ret);
+if(ret) throw CorporateExceptionNine(ret);
 ```
+
+---
 
 ---
 
@@ -701,10 +724,9 @@ Landing pad determines how to continue
 
 ## `catch`
 
-But which one? Filter! 
+But which one? Filter or rethrow!
 
 ---
-
 
 ## Throw
 
@@ -716,17 +738,18 @@ Replaced with calls into `libc++`
 
 ---
 
-## exceptions.rs
+## exception.rs
 
 ```rust
 extern crate exception_rs as exception;
 
 pub extern "C" fn oh_no() {
-    exception::throw(5, "A horrible has occured!");
+    exception::throw(202);
 }
 ```
 
-<small>Oh god please don't use this! (get it @ *cra.tw/exception-rs*)</small>
+<!-- <small>Oh god please don't use this! (get it @ *cra.tw/exception-rs*)</small> -->
+<small>Oh god please don't use this! (soon™ on crates.io)</small>
 
 ---
 
@@ -742,20 +765,12 @@ extern void *__cxa_allocate_exception(size_t thrown_size);
 extern void __cxa_throw(void *e, void **t, void (*dest)(void *));
 ```
 
-functions are linked when C++ project is compiled
+Functions are linked when C++ project is compiled
 </div>
 
 ---
 
-Proof I actually did this
-
----
-
-## VTables
-
----
-
-
+<img class="plain" src="images/exception3.png">
 
 ---
 
@@ -767,6 +782,8 @@ Or: **`kookie@spacekookie.de`**
 
 <br/>
 
-* 💚 My employer: **Ferris Systems**
+<small>Or: talk to me in the next room 😬</small>
+
+<!-- * 💚 My employer: **Ferrous Systems**
 * 🧡 Mozilla
-* ❤ All of you
+* ❤ All of you -->
