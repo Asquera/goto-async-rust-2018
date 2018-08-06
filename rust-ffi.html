@@ -109,13 +109,14 @@
 <ul>
 <li>Active FOSS developer</li>
 <li>Hobbyist hardware maker</li>
-<li>Doesn’t take enough breaks from coding</li>
 </ul>
-<!-- <br/> -->
-<!-- Thanks to
-
-* My employer **Ferrous Systems**
-* Mozilla 🧡 -->
+<p><br/></p>
+<p>Thanks to</p>
+<ul>
+<li>My employer <strong>Ferrous Systems</strong></li>
+<li>Mozilla 🧡</li>
+</ul>
+<p><br/></p>
 <!-- <br/>
 <br/>
 <br/>
@@ -133,14 +134,9 @@
 <li>Author of (too) many <code>use[ful|less]</code> crates</li>
 <li>Member of <code>berlin.rs</code></li>
 </ul>
-<!-- <br/>
+<p><br/> <br/> <br/> <br/> <br/> <!--<br/>
 <br/>
-<br/>
-<br/> -->
-<!-- <br/>
-<br/>
-<br/>
-<br/> -->
+<br/> --></p>
 </section>
 <section id="whoami3" class="slide level2">
 <h2><code>whoami(3)</code></h2>
@@ -152,14 +148,9 @@
 <li>Primary inspiration for this talk</li>
 </ul></li>
 </ul>
-<!-- <br/>
+<p><br/> <br/> <br/> <br/> <br/> <!--<br/>
 <br/>
-<br/>
-<br/> -->
-<!-- <br/>
-<br/>
-<br/>
-<br/> -->
+<br/> --></p>
 </section>
 <section id="why" class="slide level2">
 <h2>Why</h2>
@@ -167,16 +158,8 @@
 <p>Rust promises efficient FFI to C code</p>
 <p>What does this mean?</p>
 </section>
-<section id="question-time" class="slide level2">
-<h2>Question time</h2>
-<p><br/></p>
-<p>Who here</p>
-<ul>
-<li class="fragment">BONUS: has worked with Rust?</li>
-<li class="fragment">has used <code>C/C++</code> in <code>Rust</code> code?</li>
-<li class="fragment">would call themselves a C developer?</li>
-<li class="fragment">would call themselves a C++ developer?</li>
-</ul>
+<section id="abis" class="slide level2">
+<h2>ABI’s</h2>
 </section>
 <section id="abi" class="slide level2">
 <h2>ABI</h2>
@@ -189,12 +172,6 @@
 </section>
 <section id="abi-1" class="slide level2">
 <h2>ABI</h2>
-<p>An example of a not very good ABI</p>
-<p><small>Function which takes one parameter which is a 32-bit int</small></p>
-<p><img data-src="images/abi.png" /></p>
-</section>
-<section id="abi-2" class="slide level2">
-<h2>ABI</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> foo() <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="at">#[</span>repr<span class="at">(</span>C<span class="at">)]</span></a>
@@ -205,11 +182,11 @@
 <a class="sourceLine" id="cb1-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb1-9" data-line-number="9">union Fuzz <span class="op">{</span> <span class="co">/* unions are just cool by default */</span> <span class="op">}</span></a></code></pre></div>
 </section>
-<section id="abi-3" class="slide level2">
+<section id="abi-2" class="slide level2">
 <h2>ABI</h2>
 <p><img src="images/ABIs.png"  height=545px></p>
 </section>
-<section id="abi-4" class="slide level2">
+<section id="abi-3" class="slide level2">
 <h2>ABI</h2>
 <p>Let’s talk about stability</p>
 <ul>

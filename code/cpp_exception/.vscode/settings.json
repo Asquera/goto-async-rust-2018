@@ -1,5 +1,9 @@
 {
     "files.associations": {
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "istream": "c",
+        "ostream": "c",
+        "system_error": "c",
+        "type_traits": "c"
     }
 }

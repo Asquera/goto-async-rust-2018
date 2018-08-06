@@ -10,14 +10,15 @@ Katharina Fey (`@spacekookie`)
 
 * Active FOSS developer
 * Hobbyist hardware maker
-* Doesn't take enough breaks from coding
 
-<!-- <br/> -->
+<br/>
 
-<!-- Thanks to
+Thanks to
 
 * My employer **Ferrous Systems**
-* Mozilla 🧡 -->
+* Mozilla 🧡
+
+<br/>
 
 <!-- <br/>
 <br/>
@@ -39,12 +40,12 @@ I do Rust things!
 * Member of `berlin.rs`
 
 
-<!-- <br/>
 <br/>
 <br/>
-<br/> -->
-<!-- <br/>
 <br/>
+<br/>
+<br/>
+<!--<br/>
 <br/>
 <br/> -->
 
@@ -58,12 +59,12 @@ I do Rust things!
   * ~500kloc of C99
   * Primary inspiration for this talk
 
-<!-- <br/>
 <br/>
 <br/>
-<br/> -->
-<!-- <br/>
 <br/>
+<br/>
+<br/>
+<!--<br/>
 <br/>
 <br/> -->
 
@@ -79,18 +80,10 @@ What does this mean?
 
 ---
 
-## Question time
-
-<br/>
-
-Who here
-
-> * BONUS: has worked with Rust?
-> * has used `C/C++` in `Rust` code?
-> * would call themselves a C developer?
-> * would call themselves a C++ developer?
+## ABI's
 
 ---
+
 
 ## ABI
 
@@ -100,16 +93,6 @@ Application _Binary_ Interface
 
 * Defines the function signature & types
 * Much like an API but for linkers
-
----
-
-## ABI
-
-An example of a not very good ABI
-
-<small>Function which takes one parameter which is a 32-bit int</small>
-
-![](images/abi.png)
 
 ---
 
