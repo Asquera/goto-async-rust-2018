@@ -20,15 +20,6 @@ Thanks to
 
 <br/>
 
-<!-- <br/>
-<br/>
-<br/>
-<br/> -->
-<!-- <br/>
-<br/>
-<br/>
-<br/> -->
-
 ---
 
 ## `whoami(2)`
@@ -45,34 +36,26 @@ I do Rust things!
 <br/>
 <br/>
 <br/>
-<!--<br/>
-<br/>
-<br/> -->
-
----
-
-## `whoami(3)`
-
-<br/>
-
-* Core contributer to `qaul.net`
-  * ~500kloc of C99
-  * Primary inspiration for this talk
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<!--<br/>
-<br/>
-<br/> -->
 
 ---
 
 ## Why
 
-<br/>
+---
+
+## Why would you do that?
+
+---
+
+* Integrate into larger projects
+* Replace application piece by piece
+* Write plugins
+
+---
+
+## Why give this talk?
+
+---
 
 Rust promises efficient FFI to C code
 
@@ -80,7 +63,7 @@ What does this mean?
 
 ---
 
-## ABI's
+## ABI
 
 ---
 
@@ -172,12 +155,10 @@ extern "C" {
     fn reverse(const *c_char) -> const *c_char;
 }
 
-unsafe fn danger_zone<'a>(value: &'a str) -> &'a str {
-    CStr::from_ptr(
-        reverse(
-            CStr::from(value).unwrap()
-        )
-    ).to_str()
+fn stuff(value: &str) {
+    println!("{:?}", 
+        unsafe { reverse(CStr::from(value).unwrap()) }
+    );
 }
 ```
 
@@ -187,14 +168,32 @@ unsafe fn danger_zone<'a>(value: &'a str) -> &'a str {
 <br/>
 <br/>
 
+---
+
+## Boring FFI
+
+<br/>
+
+`std::os::raw` & `std::ffi` contain FFI types
+
+> * (Rust) `String` becomes `CString`
+> * (Rust) `&str` becomes `CStr`
+> * `void` becomes `c_void`
+> * ... etc ...
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
 
 ---
 
 ## Turning tables
 
+* Same `extern "C"` as before
 * Take data in C-form
 * Use `#[no_mangle]` to preserve the function name
-* Same `extern "C"` as before
 
 <div class="fragment" data-fragment-index="2">
 
@@ -231,8 +230,8 @@ Integrating the Rust code into your build toolchain
 ```
 ├── CMakeLists.txt
 ├── reverso
-│   ├── Cargo.toml
-│   └── src
+│   ├── Cargo.toml 
+│   └── src 
 │       └── lib.rs
 ├── reverso.h
 └── main.c
@@ -247,24 +246,6 @@ const char *reverse(const char *in);
 ```
 
 </div>
----
-
-##  Turning tables
-
-Integration into your existing build system
-
-```C
-execute_process(COMMAND cargo build --release
-                WORKING_DIRECTORY reverso)
-
-link_directories("reverso/target/release/")
-
-add_executable(myapp
-    main.c
-    reverso.h)
-
-target_link_libraries(myapp reverso)
-```
 
 ---
 
@@ -272,21 +253,18 @@ target_link_libraries(myapp reverso)
 
 Calling this from C is easy
 
-<!-- char * greeting = "привет RustConf 👩🏽‍💻"; -->
-
 ```C
 #include "reverso.h"
 void main() {
-    char * greeting = "привет Afra 👩🏽‍💻";
+    char * greeting = "привет RustConf 👩🏽‍💻";
     printf("'%s' reversed: '%s' \n", greeting, reverse(greeting));
 }
 ```
 
 <div class="fragment" data-fragment-index="2">
 
-<!-- 'привет RustConf 👩🏽‍💻' reversed: '💻👩🏽 fnoCtsuR тевирп' -->
 ```console
-'привет Afra 👩🏽‍💻' reversed: '💻👩🏽 arfA тевирп'
+'ривет RustConf 👩🏽‍💻' reversed: '💻👩🏽 fnoCtsuR тевирп'
 ```
 
 </div>
@@ -325,44 +303,11 @@ Don't write headers yourself. Use `cbindgen`
 * Like bindgen, but in reverse
 * Can generate `.h` files at compile-time
 
-<br/>
-
-<div class="fragment" data-fragment-index="2">
-
-### Bindgen Miniconf
-
-* 8th August @ Mozilla Berlin
-* https://berlin.rs
-
-</div>
-
 ---
 
-## Build system support
+## Build system support 
 
----
-
-## Meson
-
-Can build Rust without Cargo
-
-```lua
-project("rust shared library", "rust")
-
-l = shared_library("reverso", "reverso.rs", install : true)
-```
-
----
-
-## Erm...b...bash?
-
----
-
-## Reducing library sizes
-
-* `-C prefer-dynamic`
-* Automatic symbol stripping
-* Using the system allocator
+😏
 
 ---
 
@@ -396,26 +341,6 @@ extern "C" fn make_thing() -> Box<MyThing> {
 ## 📦 Boxes 📦
 
 ```rust
-pub struct Box<T: ?Sized>(Unique<T>);
-```
-
-```rust
-pub struct Unique<T: ?Sized> {
-    pointer: NonZero<*const T>,
-    _marker: PhantomData<T>,
-}
-```
-
-```rust
-pub struct NonZero<T: Zeroable>(pub(crate) T);
-```
-
-<br/>
-<br/>
-
----
-
-```rust
 let ptr: c_void = /* ... */;
 
 let thing: &mut MyThing = unsafe {
@@ -442,17 +367,6 @@ void main() {
 
 <br/>
 <br/>
-
----
-
-```rust
-#[no_mangle]
-extern "C" fn make_thing() -> Box<MyThing> {
-    Box::new(MyThing {
-        /* ... */
-    })
-}
-```
 
 ---
 
@@ -511,6 +425,10 @@ if (val.code) {
     // Handle errors
 }
 ```
+
+---
+
+## 👉 Pointers 
 
 ---
 
@@ -582,43 +500,6 @@ if(ret) {
 
 ---
 
-## That's pretty complicated
-
----
-
-`errno`
-
-<div class="fragment" data-fragment-index="2">
-
-![](images/errno.png)
-
-</div>
-
----
-
-## errno
-
-* Set `errno` in case of error
-* Check for errors with `errno()`
-
-Get human readable string with `strerror(errno)`
-
----
-
-![](images/errno2.png)
-
-
----
-
-```rust
-extern crate errno;
-use errno::{Errno, set_errno};
-
-set_errno(12);
-```
-
----
-
 ## Errors in C++
 
 Well...
@@ -671,11 +552,7 @@ if(ret) throw CorporateExceptionNine(ret);
 
 ---
 
-## Well
-
----
-
-## Kinda...
+## Yes!
 
 ---
 
@@ -731,7 +608,6 @@ pub extern "C" fn oh_no() {
 }
 ```
 
-<!-- <small>Oh god please don't use this! (get it @ *cra.tw/exception-rs*)</small> -->
 <small>Oh god please don't use this! (soon™ on crates.io)</small>
 
 ---
@@ -757,6 +633,16 @@ Functions are linked when C++ project is compiled
 
 ---
 
+---
+
+### Can you *catch* a C++ exception in Rust?
+
+---
+
+Yes. But not today
+
+---
+
 ## Thank you (for real)
 
 Follow me on twitter **`@spacekookie`**
@@ -765,8 +651,6 @@ Or: **`kookie@spacekookie.de`**
 
 <br/>
 
-<small>Or: talk to me in the next room 😬</small>
-
-<!-- * 💚 My employer: **Ferrous Systems**
+* 💚 My employer: **Ferrous Systems**
 * 🧡 Mozilla
-* ❤ All of you -->
+* ❤ All of you

@@ -117,14 +117,6 @@
 <li>Mozilla 🧡</li>
 </ul>
 <p><br/></p>
-<!-- <br/>
-<br/>
-<br/>
-<br/> -->
-<!-- <br/>
-<br/>
-<br/>
-<br/> -->
 </section>
 <section id="whoami2" class="slide level2">
 <h2><code>whoami(2)</code></h2>
@@ -134,34 +126,34 @@
 <li>Author of (too) many <code>use[ful|less]</code> crates</li>
 <li>Member of <code>berlin.rs</code></li>
 </ul>
-<p><br/> <br/> <br/> <br/> <br/> <!--<br/>
-<br/>
-<br/> --></p>
-</section>
-<section id="whoami3" class="slide level2">
-<h2><code>whoami(3)</code></h2>
-<p><br/></p>
-<ul>
-<li>Core contributer to <code>qaul.net</code>
-<ul>
-<li>~500kloc of C99</li>
-<li>Primary inspiration for this talk</li>
-</ul></li>
-</ul>
-<p><br/> <br/> <br/> <br/> <br/> <!--<br/>
-<br/>
-<br/> --></p>
+<p><br/> <br/> <br/> <br/> <br/></p>
 </section>
 <section id="why" class="slide level2">
 <h2>Why</h2>
-<p><br/></p>
+</section>
+<section id="why-would-you-do-that" class="slide level2">
+<h2>Why would you do that?</h2>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>Integrate into larger projects</li>
+<li>Replace application piece by piece</li>
+<li>Write plugins</li>
+</ul>
+</section>
+<section id="why-give-this-talk" class="slide level2">
+<h2>Why give this talk?</h2>
+</section>
+<section class="slide level2">
+
 <p>Rust promises efficient FFI to C code</p>
 <p>What does this mean?</p>
 </section>
-<section id="abis" class="slide level2">
-<h2>ABI’s</h2>
-</section>
 <section id="abi" class="slide level2">
+<h2>ABI</h2>
+</section>
+<section id="abi-1" class="slide level2">
 <h2>ABI</h2>
 <p>Application <em>Binary</em> Interface</p>
 <p><br/></p>
@@ -170,7 +162,7 @@
 <li>Much like an API but for linkers</li>
 </ul>
 </section>
-<section id="abi-1" class="slide level2">
+<section id="abi-2" class="slide level2">
 <h2>ABI</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> foo() <span class="op">{</span> <span class="co">/* ... */</span> <span class="op">}</span></a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"></a>
@@ -182,11 +174,11 @@
 <a class="sourceLine" id="cb1-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb1-9" data-line-number="9">union Fuzz <span class="op">{</span> <span class="co">/* unions are just cool by default */</span> <span class="op">}</span></a></code></pre></div>
 </section>
-<section id="abi-2" class="slide level2">
+<section id="abi-3" class="slide level2">
 <h2>ABI</h2>
 <p><img src="images/ABIs.png"  height=545px></p>
 </section>
-<section id="abi-3" class="slide level2">
+<section id="abi-4" class="slide level2">
 <h2>ABI</h2>
 <p>Let’s talk about stability</p>
 <ul>
@@ -216,22 +208,32 @@
 <a class="sourceLine" id="cb2-2" data-line-number="2">    <span class="kw">fn</span> reverse(<span class="kw">const</span> *<span class="dt">c_char</span>) -&gt; <span class="kw">const</span> *<span class="dt">c_char</span>;</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3"><span class="op">}</span></a>
 <a class="sourceLine" id="cb2-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">unsafe</span> <span class="kw">fn</span> danger_zone&lt;<span class="ot">&#39;a</span>&gt;(value: &amp;<span class="ot">&#39;a</span> <span class="dt">str</span>) -&gt; &amp;<span class="ot">&#39;a</span> <span class="dt">str</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">    CStr::from_ptr(</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">        reverse(</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">            CStr::from(value).unwrap()</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">        )</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">    ).to_str()</a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="op">}</span></a></code></pre></div>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">fn</span> stuff(value: &amp;<span class="dt">str</span>) <span class="op">{</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">    <span class="pp">println!</span>(<span class="st">&quot;{:?}&quot;</span>, </a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">        <span class="kw">unsafe</span> <span class="op">{</span> reverse(CStr::from(value).unwrap()) <span class="op">}</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">    );</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="op">}</span></a></code></pre></div>
 </div>
 <p><br/> <br/> <br/></p>
+</section>
+<section id="boring-ffi-1" class="slide level2">
+<h2>Boring FFI</h2>
+<p><br/></p>
+<p><code>std::os::raw</code> &amp; <code>std::ffi</code> contain FFI types</p>
+<ul>
+<li class="fragment">(Rust) <code>String</code> becomes <code>CString</code></li>
+<li class="fragment">(Rust) <code>&amp;str</code> becomes <code>CStr</code></li>
+<li class="fragment"><code>void</code> becomes <code>c_void</code></li>
+<li class="fragment">… etc …</li>
+</ul>
+<p><br/> <br/> <br/> <br/> <br/></p>
 </section>
 <section id="turning-tables" class="slide level2">
 <h2>Turning tables</h2>
 <ul>
+<li>Same <code>extern &quot;C&quot;</code> as before</li>
 <li>Take data in C-form</li>
 <li>Use <code>#[no_mangle]</code> to preserve the function name</li>
-<li>Same <code>extern &quot;C&quot;</code> as before</li>
 </ul>
 <div class="fragment" data-fragment-index="2">
 <div class="sourceCode" id="cb3"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
@@ -255,8 +257,8 @@
 <p>Integrating the Rust code into your build toolchain</p>
 <pre><code>├── CMakeLists.txt
 ├── reverso
-│   ├── Cargo.toml
-│   └── src
+│   ├── Cargo.toml 
+│   └── src 
 │       └── lib.rs
 ├── reverso.h
 └── main.c</code></pre>
@@ -268,30 +270,14 @@
 </section>
 <section id="turning-tables-3" class="slide level2">
 <h2>Turning tables</h2>
-<p>Integration into your existing build system</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" data-line-number="1">execute_process(COMMAND cargo build --release</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">                WORKING_DIRECTORY reverso)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">link_directories(<span class="st">&quot;reverso/target/release/&quot;</span>)</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">add_executable(myapp</a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">    main.c</a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">    reverso.h)</a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10">target_link_libraries(myapp reverso)</a></code></pre></div>
-</section>
-<section id="turning-tables-4" class="slide level2">
-<h2>Turning tables</h2>
 <p>Calling this from C is easy</p>
-<!-- char * greeting = "привет RustConf 👩🏽‍💻"; -->
-<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="pp">#include </span><span class="im">&quot;reverso.h&quot;</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="dt">void</span> main() {</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">    <span class="dt">char</span> * greeting = <span class="st">&quot;привет Afra 👩🏽‍💻&quot;</span>;</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">    printf(<span class="st">&quot;&#39;%s&#39; reversed: &#39;%s&#39; </span><span class="sc">\n</span><span class="st">&quot;</span>, greeting, reverse(greeting));</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">}</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="pp">#include </span><span class="im">&quot;reverso.h&quot;</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="dt">void</span> main() {</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">    <span class="dt">char</span> * greeting = <span class="st">&quot;привет RustConf 👩🏽‍💻&quot;</span>;</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">    printf(<span class="st">&quot;&#39;%s&#39; reversed: &#39;%s&#39; </span><span class="sc">\n</span><span class="st">&quot;</span>, greeting, reverse(greeting));</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">}</a></code></pre></div>
 <div class="fragment" data-fragment-index="2">
-<!-- 'привет RustConf 👩🏽‍💻' reversed: '💻👩🏽 fnoCtsuR тевирп' -->
-<pre class="console"><code>&#39;привет Afra 👩🏽‍💻&#39; reversed: &#39;💻👩🏽 arfA тевирп&#39;</code></pre>
+<pre class="console"><code>&#39;ривет RustConf 👩🏽‍💻&#39; reversed: &#39;💻👩🏽 fnoCtsuR тевирп&#39;</code></pre>
 </div>
 </section>
 <section id="thank-you" class="slide level2">
@@ -321,35 +307,10 @@
 <li>Like bindgen, but in reverse</li>
 <li>Can generate <code>.h</code> files at compile-time</li>
 </ul>
-<p><br/></p>
-<div class="fragment" data-fragment-index="2">
-<h3 id="bindgen-miniconf">Bindgen Miniconf</h3>
-<ul>
-<li>8th August @ Mozilla Berlin</li>
-<li>https://berlin.rs</li>
-</ul>
-</div>
 </section>
 <section id="build-system-support" class="slide level2">
 <h2>Build system support</h2>
-</section>
-<section id="meson" class="slide level2">
-<h2>Meson</h2>
-<p>Can build Rust without Cargo</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode lua"><code class="sourceCode lua"><a class="sourceLine" id="cb10-1" data-line-number="1">project<span class="ot">(</span><span class="st">&quot;rust shared library&quot;</span><span class="ot">,</span> <span class="st">&quot;rust&quot;</span><span class="ot">)</span></a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3">l <span class="ot">=</span> shared_library<span class="ot">(</span><span class="st">&quot;reverso&quot;</span><span class="ot">,</span> <span class="st">&quot;reverso.rs&quot;</span><span class="ot">,</span> install : <span class="kw">true</span><span class="ot">)</span></a></code></pre></div>
-</section>
-<section id="ermbbash" class="slide level2">
-<h2>Erm…b…bash?</h2>
-</section>
-<section id="reducing-library-sizes" class="slide level2">
-<h2>Reducing library sizes</h2>
-<ul>
-<li><code>-C prefer-dynamic</code></li>
-<li>Automatic symbol stripping</li>
-<li>Using the system allocator</li>
-</ul>
+<p>😏</p>
 </section>
 <section id="memory-management" class="slide level2">
 <h2>Memory management</h2>
@@ -357,73 +318,54 @@
 <section id="memory-management-1" class="slide level2">
 <h2>Memory management</h2>
 <p>Put your troubles in a box ✨</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="at">#[</span>repr<span class="at">(</span>C<span class="at">)]</span></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw">struct</span> MyThing <span class="op">{</span></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">    <span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="op">}</span></a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
-<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> make_thing() -&gt; <span class="dt">Box</span>&lt;MyThing&gt; <span class="op">{</span></a>
-<a class="sourceLine" id="cb11-8" data-line-number="8">    <span class="dt">Box</span>::new(MyThing <span class="op">{</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9">        <span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb11-10" data-line-number="10">    <span class="op">}</span>)</a>
-<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="at">#[</span>repr<span class="at">(</span>C<span class="at">)]</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">struct</span> MyThing <span class="op">{</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">    <span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="op">}</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> make_thing() -&gt; <span class="dt">Box</span>&lt;MyThing&gt; <span class="op">{</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8">    <span class="dt">Box</span>::new(MyThing <span class="op">{</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9">        <span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10">    <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="op">}</span></a></code></pre></div>
 <p><br/> <br/></p>
 </section>
 <section id="boxes" class="slide level2">
 <h2>📦 Boxes 📦</h2>
-<div class="sourceCode" id="cb12"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">pub</span> <span class="kw">struct</span> <span class="dt">Box</span>&lt;T: ?<span class="bu">Sized</span>&gt;(Unique&lt;T&gt;);</a></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">pub</span> <span class="kw">struct</span> Unique&lt;T: ?<span class="bu">Sized</span>&gt; <span class="op">{</span></a>
-<a class="sourceLine" id="cb13-2" data-line-number="2">    pointer: NonZero&lt;*<span class="kw">const</span> T&gt;,</a>
-<a class="sourceLine" id="cb13-3" data-line-number="3">    _marker: PhantomData&lt;T&gt;,</a>
-<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="op">}</span></a></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw">pub</span> <span class="kw">struct</span> NonZero&lt;T: Zeroable&gt;(<span class="kw">pub</span>(<span class="kw">crate</span>) T);</a></code></pre></div>
-<p><br/> <br/></p>
-</section>
-<section class="slide level2">
-
-<div class="sourceCode" id="cb15"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">let</span> ptr: <span class="dt">c_void</span> = <span class="co">/* ... */</span>;</a>
-<a class="sourceLine" id="cb15-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="kw">let</span> thing: &amp;<span class="kw">mut</span> MyThing = <span class="kw">unsafe</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb15-4" data-line-number="4">        &amp;<span class="kw">mut</span> *ctx <span class="kw">as</span> &amp;<span class="kw">mut</span> MyThing</a>
-<a class="sourceLine" id="cb15-5" data-line-number="5">    <span class="op">}</span>;</a>
-<a class="sourceLine" id="cb15-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb15-7" data-line-number="7">thing.foo();</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">let</span> ptr: <span class="dt">c_void</span> = <span class="co">/* ... */</span>;</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw">let</span> thing: &amp;<span class="kw">mut</span> MyThing = <span class="kw">unsafe</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">        &amp;<span class="kw">mut</span> *ctx <span class="kw">as</span> &amp;<span class="kw">mut</span> MyThing</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">    <span class="op">}</span>;</a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">thing.foo();</a></code></pre></div>
 </section>
 <section class="slide level2">
 
 <p>Remember: C is now responsible for the memory.</p>
 <p><em>You can’t make the native code memory safe</em></p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="dt">void</span> main() {</a>
-<a class="sourceLine" id="cb16-2" data-line-number="2">    MyThing *t = make_thing();</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3">    free(t);</a>
-<a class="sourceLine" id="cb16-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb16-5" data-line-number="5">    printf(<span class="st">&quot;%s&quot;</span>, t.value); <span class="co">// kaboom!</span></a>
-<a class="sourceLine" id="cb16-6" data-line-number="6">}</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="dt">void</span> main() {</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">    MyThing *t = make_thing();</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">    free(t);</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">    printf(<span class="st">&quot;%s&quot;</span>, t.value); <span class="co">// kaboom!</span></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">}</a></code></pre></div>
 <p><br/> <br/></p>
-</section>
-<section class="slide level2">
-
-<div class="sourceCode" id="cb17"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> make_thing() -&gt; <span class="dt">Box</span>&lt;MyThing&gt; <span class="op">{</span></a>
-<a class="sourceLine" id="cb17-3" data-line-number="3">    <span class="dt">Box</span>::new(MyThing <span class="op">{</span></a>
-<a class="sourceLine" id="cb17-4" data-line-number="4">        <span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb17-5" data-line-number="5">    <span class="op">}</span>)</a>
-<a class="sourceLine" id="cb17-6" data-line-number="6"><span class="op">}</span></a></code></pre></div>
 </section>
 <section id="communicating-errors" class="slide level2">
 <h2>Communicating Errors</h2>
 </section>
 <section class="slide level2">
 
-<div class="sourceCode" id="cb18"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">enum</span> <span class="dt">Result</span>&lt;T, E&gt; <span class="op">{</span></a>
-<a class="sourceLine" id="cb18-2" data-line-number="2">    <span class="cn">Ok</span>(T),</a>
-<a class="sourceLine" id="cb18-3" data-line-number="3">    <span class="cn">Err</span>(E),</a>
-<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="op">}</span></a></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw">enum</span> <span class="dt">Option</span>&lt;T&gt; <span class="op">{</span></a>
-<a class="sourceLine" id="cb19-2" data-line-number="2">    <span class="cn">Some</span>(T),</a>
-<a class="sourceLine" id="cb19-3" data-line-number="3">    <span class="cn">None</span>,</a>
-<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">enum</span> <span class="dt">Result</span>&lt;T, E&gt; <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">    <span class="cn">Ok</span>(T),</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">    <span class="cn">Err</span>(E),</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">enum</span> <span class="dt">Option</span>&lt;T&gt; <span class="op">{</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">    <span class="cn">Some</span>(T),</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">    <span class="cn">None</span>,</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="op">}</span></a></code></pre></div>
 </section>
 <section class="slide level2">
 
@@ -435,108 +377,82 @@
 <section class="slide level2">
 
 <p>Emulate <code>Result&lt;T,E&gt;</code> with a structure</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="at">#[</span>repr<span class="at">(</span>C<span class="at">)]</span></a>
-<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw">pub</span> <span class="kw">struct</span> rvalue_t&lt;T&gt; <span class="op">{</span></a>
-<a class="sourceLine" id="cb20-3" data-line-number="3">    thing: <span class="dt">Box</span>&lt;<span class="dt">Option</span>&lt;T&gt;&gt;,</a>
-<a class="sourceLine" id="cb20-4" data-line-number="4">    code: <span class="dt">u32</span>,</a>
-<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="at">#[</span>repr<span class="at">(</span>C<span class="at">)]</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="kw">pub</span> <span class="kw">struct</span> rvalue_t&lt;T&gt; <span class="op">{</span></a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">    thing: <span class="dt">Box</span>&lt;<span class="dt">Option</span>&lt;T&gt;&gt;,</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">    code: <span class="dt">u32</span>,</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5"><span class="op">}</span></a></code></pre></div>
 <div class="fragment" data-fragment-index="2">
 <p>C</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw">struct</span> rvalue_t {</a>
-<a class="sourceLine" id="cb21-2" data-line-number="2">    <span class="dt">void</span>         *ignore_me;</a>
-<a class="sourceLine" id="cb21-3" data-line-number="3">    <span class="dt">unsigned</span> <span class="dt">int</span> code;</a>
-<a class="sourceLine" id="cb21-4" data-line-number="4">};</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">struct</span> rvalue_t {</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">    <span class="dt">void</span>         *ignore_me;</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">    <span class="dt">unsigned</span> <span class="dt">int</span> code;</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">};</a></code></pre></div>
 </div>
 </section>
 <section class="slide level2">
 
-<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb22-1" data-line-number="1">rvalue_t val = myfunction();</a>
-<a class="sourceLine" id="cb22-2" data-line-number="2"><span class="cf">if</span> (val.code) {</a>
-<a class="sourceLine" id="cb22-3" data-line-number="3">    <span class="co">// Handle errors</span></a>
-<a class="sourceLine" id="cb22-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb16-1" data-line-number="1">rvalue_t val = myfunction();</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="cf">if</span> (val.code) {</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">    <span class="co">// Handle errors</span></a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">}</a></code></pre></div>
+</section>
+<section id="pointers" class="slide level2">
+<h2>👉 Pointers</h2>
 </section>
 <section id="errors-in-c" class="slide level2">
 <h2>Errors in C</h2>
-<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="dt">uint32_t</span> get_client(server_t *ctx, client_t **client);</a>
-<a class="sourceLine" id="cb23-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb23-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb23-5" data-line-number="5">client_t *client;</a>
-<a class="sourceLine" id="cb23-6" data-line-number="6">ret = get_client(ctx, &amp;client);</a>
-<a class="sourceLine" id="cb23-7" data-line-number="7"><span class="cf">if</span>(ret) {</a>
-<a class="sourceLine" id="cb23-8" data-line-number="8">    <span class="co">// Handle errors</span></a>
-<a class="sourceLine" id="cb23-9" data-line-number="9">}</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="dt">uint32_t</span> get_client(server_t *ctx, client_t **client);</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">client_t *client;</a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">ret = get_client(ctx, &amp;client);</a>
+<a class="sourceLine" id="cb17-7" data-line-number="7"><span class="cf">if</span>(ret) {</a>
+<a class="sourceLine" id="cb17-8" data-line-number="8">    <span class="co">// Handle errors</span></a>
+<a class="sourceLine" id="cb17-9" data-line-number="9">}</a></code></pre></div>
 </section>
 <section id="errors-in-c-1" class="slide level2">
 <h2>Errors in C</h2>
-<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="dt">uint32_t</span> initialise(server_t **ctx, <span class="dt">uint16_t</span> port);</a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb24-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb24-5" data-line-number="5">server_t *server;</a>
-<a class="sourceLine" id="cb24-6" data-line-number="6">ret = initialise(&amp;server, <span class="dv">1337</span>);</a>
-<a class="sourceLine" id="cb24-7" data-line-number="7"><span class="cf">if</span>(ret) {</a>
-<a class="sourceLine" id="cb24-8" data-line-number="8">    <span class="co">// Handle errors</span></a>
-<a class="sourceLine" id="cb24-9" data-line-number="9">}</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="dt">uint32_t</span> initialise(server_t **ctx, <span class="dt">uint16_t</span> port);</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb18-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">server_t *server;</a>
+<a class="sourceLine" id="cb18-6" data-line-number="6">ret = initialise(&amp;server, <span class="dv">1337</span>);</a>
+<a class="sourceLine" id="cb18-7" data-line-number="7"><span class="cf">if</span>(ret) {</a>
+<a class="sourceLine" id="cb18-8" data-line-number="8">    <span class="co">// Handle errors</span></a>
+<a class="sourceLine" id="cb18-9" data-line-number="9">}</a></code></pre></div>
 </section>
 <section id="errors-in-c-rust" class="slide level2">
 <h2>Errors in <del>C</del> Rust</h2>
-<div class="sourceCode" id="cb25"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co">/// Initialise &lt;thing&gt;</span></a>
-<a class="sourceLine" id="cb25-2" data-line-number="2"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
-<a class="sourceLine" id="cb25-3" data-line-number="3"><span class="kw">pub</span> <span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> initialise(ctx: *<span class="kw">mut</span> *<span class="kw">mut</span> <span class="dt">c_void</span>, </a>
-<a class="sourceLine" id="cb25-4" data-line-number="4">                             port: <span class="dt">c_uint</span>) -&gt; <span class="dt">c_uint</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb25-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb25-6" data-line-number="6">    <span class="co">/* ... check if port valid ... */</span> </a>
-<a class="sourceLine" id="cb25-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb25-8" data-line-number="8">    <span class="kw">let</span> server = <span class="dt">Box</span>::new(server_t <span class="op">{</span> port <span class="op">}</span>);</a>
-<a class="sourceLine" id="cb25-9" data-line-number="9">    <span class="kw">unsafe</span> <span class="op">{</span> *ctx = <span class="dt">Box</span>::into_raw(server) <span class="kw">as</span> *<span class="kw">mut</span> <span class="dt">c_void</span> <span class="op">}</span>;</a>
-<a class="sourceLine" id="cb25-10" data-line-number="10">    <span class="kw">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb25-11" data-line-number="11"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co">/// Initialise &lt;thing&gt;</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="at">#[</span>no_mangle<span class="at">]</span></a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="kw">pub</span> <span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> initialise(ctx: *<span class="kw">mut</span> *<span class="kw">mut</span> <span class="dt">c_void</span>, </a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">                             port: <span class="dt">c_uint</span>) -&gt; <span class="dt">c_uint</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb19-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb19-6" data-line-number="6">    <span class="co">/* ... check if port valid ... */</span> </a>
+<a class="sourceLine" id="cb19-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb19-8" data-line-number="8">    <span class="kw">let</span> server = <span class="dt">Box</span>::new(server_t <span class="op">{</span> port <span class="op">}</span>);</a>
+<a class="sourceLine" id="cb19-9" data-line-number="9">    <span class="kw">unsafe</span> <span class="op">{</span> *ctx = <span class="dt">Box</span>::into_raw(server) <span class="kw">as</span> *<span class="kw">mut</span> <span class="dt">c_void</span> <span class="op">}</span>;</a>
+<a class="sourceLine" id="cb19-10" data-line-number="10">    <span class="kw">return</span> <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb19-11" data-line-number="11"><span class="op">}</span></a></code></pre></div>
 </section>
 <section class="slide level2">
 
-<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co">/* rust.h */</span></a>
-<a class="sourceLine" id="cb26-2" data-line-number="2"><span class="kw">struct</span> server_t {</a>
-<a class="sourceLine" id="cb26-3" data-line-number="3">    <span class="dt">uint16_t</span> port;</a>
-<a class="sourceLine" id="cb26-4" data-line-number="4">};</a>
-<a class="sourceLine" id="cb26-5" data-line-number="5"><span class="dt">uint32_t</span> initialise(<span class="kw">struct</span> server_t **, <span class="dt">uint16_t</span>);</a>
-<a class="sourceLine" id="cb26-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb26-7" data-line-number="7"><span class="co">/* main.c */</span></a>
-<a class="sourceLine" id="cb26-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb26-9" data-line-number="9"><span class="kw">struct</span> server_t *server;</a>
-<a class="sourceLine" id="cb26-10" data-line-number="10"><span class="dt">uint32_t</span> ret = initialise(&amp;server, <span class="dv">8080</span>);</a>
-<a class="sourceLine" id="cb26-11" data-line-number="11"><span class="cf">if</span>(ret) {</a>
-<a class="sourceLine" id="cb26-12" data-line-number="12">    <span class="co">// Handle errors</span></a>
-<a class="sourceLine" id="cb26-13" data-line-number="13">}</a></code></pre></div>
-</section>
-<section id="thats-pretty-complicated" class="slide level2">
-<h2>That’s pretty complicated</h2>
-</section>
-<section class="slide level2">
-
-<p><code>errno</code></p>
-<div class="fragment" data-fragment-index="2">
-<p><img data-src="images/errno.png" /></p>
-</div>
-</section>
-<section id="errno" class="slide level2">
-<h2>errno</h2>
-<ul>
-<li>Set <code>errno</code> in case of error</li>
-<li>Check for errors with <code>errno()</code></li>
-</ul>
-<p>Get human readable string with <code>strerror(errno)</code></p>
-</section>
-<section class="slide level2">
-
-<p><img data-src="images/errno2.png" /></p>
-</section>
-<section class="slide level2">
-
-<div class="sourceCode" id="cb27"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw">extern</span> <span class="kw">crate</span> errno;</a>
-<a class="sourceLine" id="cb27-2" data-line-number="2"><span class="kw">use</span> errno::<span class="op">{</span>Errno, set_errno<span class="op">}</span>;</a>
-<a class="sourceLine" id="cb27-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb27-4" data-line-number="4">set_errno(<span class="dv">12</span>);</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co">/* rust.h */</span></a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw">struct</span> server_t {</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">    <span class="dt">uint16_t</span> port;</a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">};</a>
+<a class="sourceLine" id="cb20-5" data-line-number="5"><span class="dt">uint32_t</span> initialise(<span class="kw">struct</span> server_t **, <span class="dt">uint16_t</span>);</a>
+<a class="sourceLine" id="cb20-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co">/* main.c */</span></a>
+<a class="sourceLine" id="cb20-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb20-9" data-line-number="9"><span class="kw">struct</span> server_t *server;</a>
+<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="dt">uint32_t</span> ret = initialise(&amp;server, <span class="dv">8080</span>);</a>
+<a class="sourceLine" id="cb20-11" data-line-number="11"><span class="cf">if</span>(ret) {</a>
+<a class="sourceLine" id="cb20-12" data-line-number="12">    <span class="co">// Handle errors</span></a>
+<a class="sourceLine" id="cb20-13" data-line-number="13">}</a></code></pre></div>
 </section>
 <section id="errors-in-c-2" class="slide level2">
 <h2>Errors in C++</h2>
@@ -545,29 +461,29 @@
 <section id="errors-in-c-3" class="slide level2">
 <h2>Errors in C++</h2>
 <p>Wrap C-errors in exception throwing code</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode c++"><code class="sourceCode cpp"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="at">extern</span> <span class="st">&quot;C&quot;</span> {</a>
-<a class="sourceLine" id="cb28-2" data-line-number="2">    <span class="pp">#include </span><span class="im">&quot;cbindgen-made-this.h&quot;</span></a>
-<a class="sourceLine" id="cb28-3" data-line-number="3">}</a>
-<a class="sourceLine" id="cb28-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb28-5" data-line-number="5"><span class="kw">class</span> MyRustModule {</a>
-<a class="sourceLine" id="cb28-6" data-line-number="6">    <span class="dt">void</span> do_something_dangerous() {</a>
-<a class="sourceLine" id="cb28-7" data-line-number="7">        <span class="kw">auto</span> ret = do_rust_things();</a>
-<a class="sourceLine" id="cb28-8" data-line-number="8">        <span class="cf">if</span>(ret) <span class="cf">throw</span> CorporateExceptionSeven(ret);</a>
-<a class="sourceLine" id="cb28-9" data-line-number="9">    }</a>
-<a class="sourceLine" id="cb28-10" data-line-number="10">}</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c++"><code class="sourceCode cpp"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="at">extern</span> <span class="st">&quot;C&quot;</span> {</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">    <span class="pp">#include </span><span class="im">&quot;cbindgen-made-this.h&quot;</span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">}</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5"><span class="kw">class</span> MyRustModule {</a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">    <span class="dt">void</span> do_something_dangerous() {</a>
+<a class="sourceLine" id="cb21-7" data-line-number="7">        <span class="kw">auto</span> ret = do_rust_things();</a>
+<a class="sourceLine" id="cb21-8" data-line-number="8">        <span class="cf">if</span>(ret) <span class="cf">throw</span> CorporateExceptionSeven(ret);</a>
+<a class="sourceLine" id="cb21-9" data-line-number="9">    }</a>
+<a class="sourceLine" id="cb21-10" data-line-number="10">}</a></code></pre></div>
 </section>
 <section id="errors-in-c-4" class="slide level2">
 <h2>Errors in C++</h2>
-<div class="sourceCode" id="cb29"><pre class="sourceCode c++"><code class="sourceCode cpp"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">namespace</span> Rust {</a>
-<a class="sourceLine" id="cb29-2" data-line-number="2">    <span class="at">extern</span> <span class="st">&quot;C&quot;</span> {</a>
-<a class="sourceLine" id="cb29-3" data-line-number="3">        <span class="pp">#include </span><span class="im">&quot;no_i_made_this.h&quot;</span></a>
-<a class="sourceLine" id="cb29-4" data-line-number="4">    }</a>
-<a class="sourceLine" id="cb29-5" data-line-number="5">}</a>
-<a class="sourceLine" id="cb29-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb29-7" data-line-number="7"><span class="co">/* ... */</span></a>
-<a class="sourceLine" id="cb29-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb29-9" data-line-number="9"><span class="kw">auto</span> ret = Rust::do_something_dangerous();</a>
-<a class="sourceLine" id="cb29-10" data-line-number="10"><span class="cf">if</span>(ret) <span class="cf">throw</span> CorporateExceptionNine(ret);</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c++"><code class="sourceCode cpp"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw">namespace</span> Rust {</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">    <span class="at">extern</span> <span class="st">&quot;C&quot;</span> {</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">        <span class="pp">#include </span><span class="im">&quot;no_i_made_this.h&quot;</span></a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">    }</a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb22-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">/* ... */</span></a>
+<a class="sourceLine" id="cb22-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="kw">auto</span> ret = Rust::do_something_dangerous();</a>
+<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="cf">if</span>(ret) <span class="cf">throw</span> CorporateExceptionNine(ret);</a></code></pre></div>
 </section>
 <section class="slide level2">
 
@@ -579,11 +495,8 @@
 <section id="section" class="slide level2">
 <h2>😱</h2>
 </section>
-<section id="well" class="slide level2">
-<h2>Well</h2>
-</section>
-<section id="kinda" class="slide level2">
-<h2>Kinda…</h2>
+<section id="yes" class="slide level2">
+<h2>Yes!</h2>
 </section>
 <section id="exceptions" class="slide level2">
 <h2>Exceptions</h2>
@@ -617,12 +530,11 @@
 </section>
 <section id="exception.rs" class="slide level2">
 <h2>exception.rs</h2>
-<div class="sourceCode" id="cb30"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">extern</span> <span class="kw">crate</span> exception_rs <span class="kw">as</span> exception;</a>
-<a class="sourceLine" id="cb30-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="kw">pub</span> <span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> oh_no() <span class="op">{</span></a>
-<a class="sourceLine" id="cb30-4" data-line-number="4">    exception::throw(<span class="dv">202</span>);</a>
-<a class="sourceLine" id="cb30-5" data-line-number="5"><span class="op">}</span></a></code></pre></div>
-<!-- <small>Oh god please don't use this! (get it @ *cra.tw/exception-rs*)</small> -->
+<div class="sourceCode" id="cb23"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">extern</span> <span class="kw">crate</span> exception_rs <span class="kw">as</span> exception;</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="kw">pub</span> <span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> oh_no() <span class="op">{</span></a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">    exception::throw(<span class="dv">202</span>);</a>
+<a class="sourceLine" id="cb23-5" data-line-number="5"><span class="op">}</span></a></code></pre></div>
 <p><small>Oh god please don’t use this! (soon™ on crates.io)</small></p>
 </section>
 <section class="slide level2">
@@ -632,8 +544,8 @@
 <p>Invoke apropriate functions via <code>C</code> shim layer</p>
 </div>
 <div class="fragment" data-fragment-index="3">
-<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">extern</span> <span class="dt">void</span> *__cxa_allocate_exception(<span class="dt">size_t</span> thrown_size);</a>
-<a class="sourceLine" id="cb31-2" data-line-number="2"><span class="kw">extern</span> <span class="dt">void</span> __cxa_throw(<span class="dt">void</span> *e, <span class="dt">void</span> **t, <span class="dt">void</span> (*dest)(<span class="dt">void</span> *));</a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">extern</span> <span class="dt">void</span> *__cxa_allocate_exception(<span class="dt">size_t</span> thrown_size);</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="kw">extern</span> <span class="dt">void</span> __cxa_throw(<span class="dt">void</span> *e, <span class="dt">void</span> **t, <span class="dt">void</span> (*dest)(<span class="dt">void</span> *));</a></code></pre></div>
 <p>Functions are linked when C++ project is compiled</p>
 </div>
 </section>
@@ -641,15 +553,27 @@
 
 <p><img class="plain" src="images/exception3.png"></p>
 </section>
+<section class="slide level2">
+
+</section>
+<section class="slide level2">
+
+<h3 id="can-you-catch-a-c-exception-in-rust">Can you <em>catch</em> a C++ exception in Rust?</h3>
+</section>
+<section class="slide level2">
+
+<p>Yes. But not today</p>
+</section>
 <section id="thank-you-for-real" class="slide level2">
 <h2>Thank you (for real)</h2>
 <p>Follow me on twitter <strong><code>@spacekookie</code></strong></p>
 <p>Or: <strong><code>kookie@spacekookie.de</code></strong></p>
 <p><br/></p>
-<p><small>Or: talk to me in the next room 😬</small></p>
-<!-- * 💚 My employer: **Ferrous Systems**
-* 🧡 Mozilla
-* ❤ All of you -->
+<ul>
+<li>💚 My employer: <strong>Ferrous Systems</strong></li>
+<li>🧡 Mozilla</li>
+<li>❤ All of you</li>
+</ul>
 </section>
     </div>
   </div>
