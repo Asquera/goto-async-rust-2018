@@ -6,19 +6,11 @@ transition: fade
 
 ## `whoami(1)`
 
-Katharina Fey (`@spacekookie`)
+Katharina Fey ( `@spacekookie` )
 
 * Active FOSS developer
-* Hobbyist hardware maker
-
-<br/>
-
-Thanks to
-
-* My employer **Ferrous Systems**
-* Mozilla 🧡
-
-<br/>
+* Avid tea drinker
+* Hobbyist hardware maker 
 
 ---
 
@@ -26,16 +18,9 @@ Thanks to
 
 I do Rust things!
 
-* Core contributer to the CLI-WG
+* Contributer to the CLI-WG
 * Author of (too) many `use[ful|less]` crates
 * Member of `berlin.rs`
-
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
 ---
 
@@ -105,10 +90,17 @@ union Fuzz { /* unions are just cool by default */ }
 
 Let's talk about stability
 
-> * Rust ABI is *not* stable
-> * Neither is C++
-> * C doesn't _have_ an ABI
->   * The operating system does
+<img src="images/rustabi.png">
+
+---
+
+Neither does C++
+
+---
+
+C doesn't _have_ an ABI
+
+The operating system does
 
 ---
 
@@ -430,6 +422,8 @@ if (val.code) {
 
 ## 👉 Pointers 
 
+<img src="images/pointers.png">
+
 ---
 
 ## Errors in C
@@ -537,7 +531,7 @@ namespace Rust {
 /* ... */
 
 auto ret = Rust::do_something_dangerous();
-if(ret) throw CorporateExceptionNine(ret);
+if(ret) return new MyResultNine(ret, "Oh no!");
 ```
 
 ---
@@ -604,7 +598,7 @@ Replaced with calls into `libc++`
 extern crate exception_rs as exception;
 
 pub extern "C" fn oh_no() {
-    exception::throw(202);
+    exception::throw(RustException { text: "Oh noes!" });
 }
 ```
 
@@ -629,7 +623,7 @@ Functions are linked when C++ project is compiled
 
 ---
 
-<img class="plain" src="images/exception3.png">
+<img class="plain" src="images/exception4.png">
 
 ---
 

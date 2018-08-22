@@ -6,9 +6,9 @@
 
 extern void *__cxa_allocate_exception(size_t thrown_size);
 extern void __cxa_throw(void *thrown_exception, void **tinfo, void (*dest)(void *));
-extern void *_ZTI13RustException; // typeinfo of long
+extern void *_ZTI19CustomRustException; // typeinfo of long
 
-struct RustException {
+struct CustomRustException {
     int64_t value;
     unsigned char *message;
 };
@@ -16,13 +16,13 @@ struct RustException {
 int throw_native(int64_t value)
 {
     printf("From C: Hello!\n");
-    struct RustException *p = (struct RustException *) __cxa_allocate_exception(16);
+    struct CustomRustException *p = (struct CustomRustException *) __cxa_allocate_exception(16);
     p->value = value;
     p->message = calloc(sizeof(char), 4);
     strcpy((char*) p->message, "lol\n");
 
     printf("From C: Allocating exception 3:)\n");
-    __cxa_throw(p, &_ZTI13RustException, 0);
+    __cxa_throw(p, &_ZTI19CustomRustException, 0);
     return 10;
 }
 

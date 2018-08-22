@@ -2,7 +2,7 @@
 <html$if(lang)$ lang="$lang$"$endif$$if(dir)$ dir="$dir$"$endif$>
 <head>
   <meta charset="utf-8">
-  <script src="//twemoji.maxcdn.com/2/twemoji.min.js?11.0"></script>
+  <script src="https://twemoji.maxcdn.com/2/twemoji.min.js?11.0"></script>
   <meta name="generator" content="pandoc">
 $for(author-meta)$
   <meta name="author" content="$author-meta$">
@@ -33,6 +33,15 @@ $endif$
       color: #8ea9d2;
     }
   </style>
+
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = "$revealjs-url$/css/theme/$theme$.css";
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
 $if(theme)$
   <link rel="stylesheet" href="$revealjs-url$/css/theme/$theme$.css" id="theme">
 $else$

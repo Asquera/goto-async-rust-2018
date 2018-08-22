@@ -11,12 +11,13 @@ using std::cout;
 using std::endl;
 
 int main(int argc, char *argv[]) {
+    cout << "From C++: Running some Rust code – hope it doesn't break anything!" << endl;
+    totally_safe_rust_code();
+    
     try {
-        cout << "From C++: Running some Rust code in a `try` block – I don't trust Rust!" << endl;
         totally_safe_rust_code();
-    } catch (RustException e) {
+    } catch (CustomRustException e) {
         cout << "From C++: Rust Exception code: " << e.code << ", message: " << e.message << endl;
     }
-
     return 0;
 }

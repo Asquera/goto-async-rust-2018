@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct RustException {
+struct CustomRustException {
     int64_t code;
     unsigned char *message;
 };

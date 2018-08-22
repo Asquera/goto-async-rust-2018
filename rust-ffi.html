@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <script src="//twemoji.maxcdn.com/2/twemoji.min.js?11.0"></script>
+  <script src="https://twemoji.maxcdn.com/2/twemoji.min.js?11.0"></script>
   <meta name="generator" content="pandoc">
   <title>Rust 💖 C/C++</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -81,6 +81,15 @@
       color: #8ea9d2;
     }
   </style>
+
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = "template/css/theme/moon.css";
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
   <link rel="stylesheet" href="template/css/theme/moon.css" id="theme">
   <!-- Printing and PDF exports -->
   <script>
@@ -105,28 +114,21 @@
 
 <section id="whoami1" class="slide level2">
 <h2><code>whoami(1)</code></h2>
-<p>Katharina Fey (<code>@spacekookie</code>)</p>
+<p>Katharina Fey ( <code>@spacekookie</code> )</p>
 <ul>
 <li>Active FOSS developer</li>
+<li>Avid tea drinker</li>
 <li>Hobbyist hardware maker</li>
 </ul>
-<p><br/></p>
-<p>Thanks to</p>
-<ul>
-<li>My employer <strong>Ferrous Systems</strong></li>
-<li>Mozilla 🧡</li>
-</ul>
-<p><br/></p>
 </section>
 <section id="whoami2" class="slide level2">
 <h2><code>whoami(2)</code></h2>
 <p>I do Rust things!</p>
 <ul>
-<li>Core contributer to the CLI-WG</li>
+<li>Contributer to the CLI-WG</li>
 <li>Author of (too) many <code>use[ful|less]</code> crates</li>
 <li>Member of <code>berlin.rs</code></li>
 </ul>
-<p><br/> <br/> <br/> <br/> <br/></p>
 </section>
 <section id="why" class="slide level2">
 <h2>Why</h2>
@@ -181,14 +183,16 @@
 <section id="abi-4" class="slide level2">
 <h2>ABI</h2>
 <p>Let’s talk about stability</p>
-<ul>
-<li class="fragment">Rust ABI is <em>not</em> stable</li>
-<li class="fragment">Neither is C++</li>
-<li class="fragment">C doesn’t <em>have</em> an ABI
-<ul>
-<li class="fragment">The operating system does</li>
-</ul></li>
-</ul>
+<p><img src="images/rustabi.png"></p>
+</section>
+<section class="slide level2">
+
+<p>Neither does C++</p>
+</section>
+<section class="slide level2">
+
+<p>C doesn’t <em>have</em> an ABI</p>
+<p>The operating system does</p>
 </section>
 <section id="c-code-from-rust" class="slide level2">
 <h2>C code from Rust</h2>
@@ -399,6 +403,7 @@
 </section>
 <section id="pointers" class="slide level2">
 <h2>👉 Pointers</h2>
+<p><img src="images/pointers.png"></p>
 </section>
 <section id="errors-in-c" class="slide level2">
 <h2>Errors in C</h2>
@@ -483,7 +488,7 @@
 <a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">/* ... */</span></a>
 <a class="sourceLine" id="cb22-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb22-9" data-line-number="9"><span class="kw">auto</span> ret = Rust::do_something_dangerous();</a>
-<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="cf">if</span>(ret) <span class="cf">throw</span> CorporateExceptionNine(ret);</a></code></pre></div>
+<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="cf">if</span>(ret) <span class="cf">return</span> <span class="kw">new</span> MyResultNine(ret, <span class="st">&quot;Oh no!&quot;</span>);</a></code></pre></div>
 </section>
 <section class="slide level2">
 
@@ -533,7 +538,7 @@
 <div class="sourceCode" id="cb23"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">extern</span> <span class="kw">crate</span> exception_rs <span class="kw">as</span> exception;</a>
 <a class="sourceLine" id="cb23-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb23-3" data-line-number="3"><span class="kw">pub</span> <span class="kw">extern</span> <span class="st">&quot;C&quot;</span> <span class="kw">fn</span> oh_no() <span class="op">{</span></a>
-<a class="sourceLine" id="cb23-4" data-line-number="4">    exception::throw(<span class="dv">202</span>);</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">    exception::throw(RustException <span class="op">{</span> text: <span class="st">&quot;Oh noes!&quot;</span> <span class="op">}</span>);</a>
 <a class="sourceLine" id="cb23-5" data-line-number="5"><span class="op">}</span></a></code></pre></div>
 <p><small>Oh god please don’t use this! (soon™ on crates.io)</small></p>
 </section>
@@ -551,7 +556,7 @@
 </section>
 <section class="slide level2">
 
-<p><img class="plain" src="images/exception3.png"></p>
+<p><img class="plain" src="images/exception4.png"></p>
 </section>
 <section class="slide level2">
 
@@ -587,7 +592,7 @@
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
         // Display a presentation progress bar
-        progress: true,
+        progress: false,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
