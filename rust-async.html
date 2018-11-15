@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://twemoji.maxcdn.com/2/twemoji.min.js?11.0"></script>
+  <meta name="generator" content="pandoc">
+  <title>async in Rust 2018</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="template/css/reveal.css">
+  <style type="text/css">
+    code{white-space: pre;}
+
+    
+          a.sourceLine { display: inline-block; line-height: 1.25; }
+      a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+      a.sourceLine:empty { height: 1.2em; position: absolute; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode { white-space: pre; position: relative; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      code.sourceCode { white-space: pre-wrap; }
+      a.sourceLine { text-indent: -1em; padding-left: 1em; }
+      }
+      pre.numberSource a.sourceLine
+        { position: relative; }
+      pre.numberSource a.sourceLine:empty
+        { position: absolute; }
+      pre.numberSource a.sourceLine::before
+        { content: attr(data-line-number);
+          position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+          border: none; pointer-events: all;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {  }
+      @media screen {
+      a.sourceLine::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    
+    .reveal a[href^="#"]:visited {
+      color: #8ea9d2;
+    }
+  </style>
+
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = "template/css/theme/moon.css";
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
+  <link rel="stylesheet" href="template/css/theme/moon.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'template/css/print/pdf.css' : 'template/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="template/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+  <h1 class="title">async in Rust 2018</h1>
+  <p class="subtitle">The future of <code>Future&lt;T&gt;</code></p>
+</section>
+
+<section class="slide level2">
+
+<p>I’m not Florian!</p>
+</section>
+<section id="whoami1" class="slide level2">
+<h2><code>whoami(1)</code></h2>
+<p>Katharina Fey ( <code>@spacekookie</code> )</p>
+<ul>
+<li>Active FOSS developer</li>
+<li>Avid tea drinker</li>
+<li>Hobbyist hardware maker</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>I also make some attrocious puns</p>
+</section>
+<section class="slide level2">
+
+<p><img src="images/twitter_a.png" height=275px/></p>
+<p><img src="images/twitter_b.png" height=250px/></p>
+</section>
+<section id="whoami2" class="slide level2">
+<h2><code>whoami(2)</code></h2>
+<p>I do Rust things!</p>
+<ul>
+<li>Contributer of the CLI working group</li>
+<li>Member of the community team &amp; <code>berlin.rs</code></li>
+<li>Maintainer of several <code>use[ful|less]</code> libraries</li>
+</ul>
+</section>
+<section id="rust" class="slide level2">
+<h2>Rust</h2>
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>Rust is a systems programming language that runs blazingly fast, prevents segfaults, and guarantees thread safety.</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p><img src="images/confused_travolta.gif" height=350px /></p>
+</section>
+<section id="safety" class="slide level2">
+<h2>Safety</h2>
+<ul>
+<li class="fragment">Memory safety</li>
+<li class="fragment">Thread safety</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p><em>spectrum of programming languages here</em></p>
+</section>
+<section id="memory-safety" class="slide level2">
+<h2>Memory Safety</h2>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>No garbage collector</li>
+<li>No manual memory allocations</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p><strong>Ownership</strong></p>
+</section>
+<section class="slide level2">
+
+<p><em>some picture to show ownership</em></p>
+</section>
+<section class="slide level2">
+
+<p><strong>Borrowing</strong></p>
+</section>
+<section class="slide level2">
+
+<p><em>some picture to show borrowing</em></p>
+</section>
+<section id="send-sync" class="slide level2">
+<h2><code>Send</code> &amp; <code>Sync</code></h2>
+<ul>
+<li class="fragment">Send = Can be sent between thread boundries safely</li>
+<li class="fragment">Sync = Can be <em>shared</em> between threads safely</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">struct</span> MyFoo <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">fn</span> main() <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="kw">let</span> foo = MyFoo <span class="op">{</span> ... <span class="op">}</span>; <span class="co">// Is neither Send nor Sync</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">    <span class="kw">let</span> mutex = Mutex::new(foo); <span class="co">// Provides Sync</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">    <span class="kw">let</span> arc = Arc::new(mutex); <span class="co">// Provides Send</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="op">}</span></a></code></pre></div>
+</section>
+<section class="slide level2">
+
+<p><strong>The type system enforces thread safety</strong></p>
+</section>
+<section class="slide level2">
+
+<div class="sourceCode" id="cb2"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">let</span> tcp_listener = ...;</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">let</span> state = ...; <span class="co">// Not Send or Sync</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw">for</span> connection <span class="kw">in</span> tcp_listener.incoming() <span class="op">{</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">    <span class="co">// Will not compile!</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">    thread::spawn(|| do_stuff(connection, state)); </a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="op">}</span></a></code></pre></div>
+</section>
+<section class="slide level2">
+
+<p><strong>Concurrency problems are made explicit</strong></p>
+</section>
+<section id="what-about-async-then" class="slide level2">
+<h2>What about async then?</h2>
+</section>
+<section id="what-are-futures" class="slide level2">
+<h2>What are Futures?</h2>
+</section>
+<section class="slide level2">
+
+<p><img data-src="images/back_to_the_future.gif" /></p>
+</section>
+<section class="slide level2">
+
+<p>No, not that type of Futures</p>
+</section>
+<section class="slide level2">
+
+<p><strong><code>Future</code> = calculation that hasn’t happened yet</strong></p>
+<ul>
+<li class="fragment">Is probably gonna happen at some point</li>
+<li class="fragment">Just keep asking</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p><strong>Event Loop = runtime for <code>Future</code>s</strong></p>
+<ul>
+<li>Keeps polling <code>Future</code> until it is ready</li>
+<li>Runs your code whenever it can be run</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p><strong>Other languages have this too</strong></p>
+</section>
+<section class="slide level2">
+
+<p><strong>Future = Promise</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"></code></pre></div>
+</section>
+<section id="what-about-rust-then" class="slide level2">
+<h2>What about Rust then?</h2>
+</section>
+<section id="late-2013" class="slide level2">
+<h2>Late 2013</h2>
+</section>
+<section class="slide level2">
+
+<h3 id="libgreen"><code>libgreen</code></h3>
+</section>
+<section class="slide level2">
+
+<p><img data-src="images/libgreen_add.png" /></p>
+<ul>
+<li>Rust had green threading support</li>
+<li>Enabled non-blocking IO</li>
+</ul>
+</section>
+<section id="late-2014" class="slide level2">
+<h2>Late 2014</h2>
+</section>
+<section class="slide level2">
+
+<p><strong><code>libgreen</code> is dead, long live <code>libgreen</code></strong></p>
+<p><img data-src="images/libgreen_remove.png" /></p>
+</section>
+<section class="slide level2">
+
+<p>Sorry, did I say <del>libgreen</del>, I meant <code>mio.rs</code></p>
+</section>
+<section id="mio.rs" class="slide level2">
+<h2><code>mio.rs</code></h2>
+<p><small>“Metal IO” 🤘</small></p>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>Light, non-blocking IO library</li>
+<li>Eventually developed an ecosystem around it</li>
+</ul>
+</section>
+<section id="mid-2016" class="slide level2">
+<h2>Mid 2016</h2>
+</section>
+<section class="slide level2">
+
+<h3 id="tokio-core"><code>tokio-core</code></h3>
+</section>
+<section id="tokio" class="slide level2">
+<h2>tokio</h2>
+<ul>
+<li class="fragment">An event loop</li>
+<li class="fragment">Futures abstraction</li>
+<li class="fragment">Lots of utilities</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p><em>small code example</em></p>
+</section>
+<section class="slide level2">
+
+<p><strong>Thread safety still enforced by the typesystem</strong></p>
+</section>
+<section id="tokio-1" class="slide level2">
+<h2>tokio</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode rust"><code class="sourceCode rust"></code></pre></div>
+</section>
+<section id="thats-it" class="slide level2">
+<h2>That’s it</h2>
+<p>Follow me on twitter <strong><code>@spacekookie</code></strong></p>
+<p>Or: <strong><code>kookie@spacekookie.de</code></strong></p>
+<p><br/></p>
+<h4 id="thanks-to-my-employers">Thanks to my employers</h4>
+<ul>
+<li>I do <em>Rust</em> work at <strong>Ferrous Systems</strong></li>
+<li>I do <em>Distributed Systems</em> at <strong>Asquera</strong></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="template/lib/js/head.min.js"></script>
+  <script src="template/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display a presentation progress bar
+        progress: false,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'template/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'template/plugin/zoom-js/zoom.js', async: true },
+              { src: 'template/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

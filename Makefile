@@ -3,9 +3,9 @@ INPUT_FOLDER ?= $(shell pwd)
 OUTPUT_FOLDER ?= $(shell pwd)/dist
 
 slides:
-	@pandoc rust-ffi.md \
+	@pandoc rust-async.md \
 	--to revealjs \
-	--output rust-ffi.html \
+	--output rust-async.html \
 	--template template/index.html \
 	-V revealjs-url=template \
 	-V theme=moon \
@@ -17,13 +17,13 @@ slides:
 pdf: slides
 	@echo "This might take a while, I'll beep when it's done"
 	@echo ""
-	npx decktape reveal `pwd`/rust-ffi.html  rust-ffi.pdf
+	npx decktape reveal `pwd`/rust-async.html  rust-async.pdf
 	@echo -e "\a"
 
 beamer:
 	cp -R $(IMAGES_FOLDER) $(OUTPUT_FOLDER); \
 	cd $(INPUT_FOLDER); \
-	$(PANDOC) $(INPUT_FOLDER)/rust-ffi.md \
+	$(PANDOC) $(INPUT_FOLDER)/rust-async.md \
 	--from=$(MARKDOWN_OPTIONS) \
 	--base-header-level=2 \
 	--table-of-contents \
