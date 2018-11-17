@@ -114,7 +114,7 @@
 
 <section class="slide level2">
 
-<p>I’m not Florian!</p>
+<p>I’m not Florian</p>
 </section>
 <section id="whoami1" class="slide level2">
 <h2><code>whoami(1)</code></h2>
@@ -143,6 +143,19 @@
 <li>Maintainer of several <code>use[ful|less]</code> libraries</li>
 </ul>
 </section>
+<section id="concurrency-is-hard" class="slide level2">
+<h2>Concurrency is hard</h2>
+</section>
+<section class="slide level2">
+
+<p><em>some funny gif</em></p>
+</section>
+<section class="slide level2">
+
+<p>Race conditions</p>
+<p><strong>vs</strong></p>
+<p>Inefficient scaling</p>
+</section>
 <section id="rust" class="slide level2">
 <h2>Rust</h2>
 </section>
@@ -158,83 +171,50 @@
 </section>
 <section id="safety" class="slide level2">
 <h2>Safety</h2>
-<ul>
-<li class="fragment">Memory safety</li>
-<li class="fragment">Thread safety</li>
-</ul>
 </section>
 <section class="slide level2">
 
-<p><em>spectrum of programming languages here</em></p>
-</section>
-<section id="memory-safety" class="slide level2">
-<h2>Memory Safety</h2>
-</section>
-<section class="slide level2">
-
-<ul>
-<li>No garbage collector</li>
-<li>No manual memory allocations</li>
-</ul>
+<div class="fragment" data-fragment-index="2">
+<p>Memory safety</p>
+</div>
+<div class="fragment" data-fragment-index="3">
+<p><strong>and</strong></p>
+<p>Thread safety</p>
+</div>
 </section>
 <section class="slide level2">
 
-<p><strong>Ownership</strong></p>
+<p><em>xkcd style spectrum of programming languages here</em></p>
 </section>
 <section class="slide level2">
 
-<p><em>some picture to show ownership</em></p>
+<p>It’s about empowering developers</p>
 </section>
 <section class="slide level2">
 
-<p><strong>Borrowing</strong></p>
+<blockquote>
+<p>No matter what kind of code you are writing now, Rust empowers you to reach farther, to program with confidence in a wider variety of domains than you did before.</p>
+</blockquote>
+<p><small>— Rust book, foreword</small></p>
+</section>
+<section id="async" class="slide level2">
+<h2>Async</h2>
+</section>
+<section id="what-is-that" class="slide level2">
+<h2>What is that?</h2>
+</section>
+<section id="what-does-it-know" class="slide level2">
+<h2>What does it know?</h2>
+</section>
+<section id="lets-find-out" class="slide level2">
+<h2>Let’s find out!</h2>
 </section>
 <section class="slide level2">
 
-<p><em>some picture to show borrowing</em></p>
+<p>“Do this thing but don’t make me wait”</p>
 </section>
-<section id="send-sync" class="slide level2">
-<h2><code>Send</code> &amp; <code>Sync</code></h2>
-<ul>
-<li class="fragment">Send = Can be sent between thread boundries safely</li>
-<li class="fragment">Sync = Can be <em>shared</em> between threads safely</li>
-</ul>
-</section>
-<section class="slide level2">
-
-<div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">struct</span> MyFoo <span class="op">{</span> ... <span class="op">}</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">fn</span> main() <span class="op">{</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="kw">let</span> foo = MyFoo <span class="op">{</span> ... <span class="op">}</span>; <span class="co">// Is neither Send nor Sync</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">    <span class="kw">let</span> mutex = Mutex::new(foo); <span class="co">// Provides Sync</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">    <span class="kw">let</span> arc = Arc::new(mutex); <span class="co">// Provides Send</span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="op">}</span></a></code></pre></div>
-</section>
-<section class="slide level2">
-
-<p><strong>The type system enforces thread safety</strong></p>
-</section>
-<section class="slide level2">
-
-<div class="sourceCode" id="cb2"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">let</span> tcp_listener = ...;</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">let</span> state = ...; <span class="co">// Not Send or Sync</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw">for</span> connection <span class="kw">in</span> tcp_listener.incoming() <span class="op">{</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">    <span class="co">// Will not compile!</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">    thread::spawn(|| do_stuff(connection, state)); </a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="op">}</span></a></code></pre></div>
-</section>
-<section class="slide level2">
-
-<p><strong>Concurrency problems are made explicit</strong></p>
-</section>
-<section id="what-about-async-then" class="slide level2">
-<h2>What about async then?</h2>
-</section>
-<section id="what-are-futures" class="slide level2">
-<h2>What are Futures?</h2>
+<section id="futures" class="slide level2">
+<h2>Futures</h2>
 </section>
 <section class="slide level2">
 
@@ -262,15 +242,17 @@
 </section>
 <section class="slide level2">
 
-<p><strong>Other languages have this too</strong></p>
+<p><img data-src="images/apache-vs-nginx.png" /></p>
 </section>
 <section class="slide level2">
 
-<p><strong>Future = Promise</strong></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"></code></pre></div>
 </section>
-<section id="what-about-rust-then" class="slide level2">
-<h2>What about Rust then?</h2>
+<section class="slide level2">
+
+<p>I’m here to show code and talk history</p>
+<div class="fragment" data-fragment-index="2">
+<p>and I’m all out of code</p>
+</div>
 </section>
 <section id="late-2013" class="slide level2">
 <h2>Late 2013</h2>
@@ -286,6 +268,17 @@
 <li>Rust had green threading support</li>
 <li>Enabled non-blocking IO</li>
 </ul>
+</section>
+<section class="slide level2">
+
+<p>Included a runtime in <code>stdlib</code></p>
+<ul>
+<li>This came with a lot of problems</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>Rust wanted to go to different places</p>
 </section>
 <section id="late-2014" class="slide level2">
 <h2>Late 2014</h2>
@@ -307,38 +300,134 @@
 
 <ul>
 <li>Light, non-blocking IO library</li>
+<li>Abstracts async over different platforms</li>
 <li>Eventually developed an ecosystem around it</li>
 </ul>
+</section>
+<section class="slide level2">
+
+</section>
+<section class="slide level2">
+
+<p><img src="images/hit-you-with-some-knowledge.gif" width=450px /></p>
+</section>
+<section class="slide level2">
+
+<h3 id="zero-cost-abstractions">Zero Cost Abstractions</h3>
+</section>
+<section class="slide level2">
+
+<p><strong>= no discernible runtime overhead</strong></p>
+</section>
+<section class="slide level2">
+
+<p><em>something explaining this here</em></p>
 </section>
 <section id="mid-2016" class="slide level2">
 <h2>Mid 2016</h2>
 </section>
 <section class="slide level2">
 
-<h3 id="tokio-core"><code>tokio-core</code></h3>
+<p><img src="images/futures-rs-logo.svg" /></p>
 </section>
-<section id="tokio" class="slide level2">
-<h2>tokio</h2>
+<section class="slide level2">
+
 <ul>
-<li class="fragment">An event loop</li>
-<li class="fragment">Futures abstraction</li>
-<li class="fragment">Lots of utilities</li>
+<li><em>zero cost abstraction</em> for futures</li>
+<li>Building async state-machines</li>
 </ul>
 </section>
 <section class="slide level2">
 
-<p><em>small code example</em></p>
+<h3 id="tokio-core"><code>tokio-core</code></h3>
 </section>
 <section class="slide level2">
 
-<p><strong>Thread safety still enforced by the typesystem</strong></p>
+<ul>
+<li>Wraps around <code>mio.rs</code> and <code>futures.rs</code></li>
+<li>Event reactor</li>
+</ul>
 </section>
-<section id="tokio-1" class="slide level2">
-<h2>tokio</h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode rust"><code class="sourceCode rust"></code></pre></div>
+<section id="fast-foward-to-2018" class="slide level2">
+<h2>Fast foward to 2018</h2>
 </section>
-<section id="thats-it" class="slide level2">
-<h2>That’s it</h2>
+<section class="slide level2">
+
+<p>It’s state machines all the way down</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">let</span> futures = async_a()</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">                .and_then(|f| <span class="op">{</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">                    async_b(f.some_data)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">                        .and_then(|f| run(f))</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">                <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">                .and_then(|f| async_c(f.some_other_data))</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">                    .map(|s| process(s))</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">                    .map_err(|e| handle(e));</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">// Actually run here</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">tokio::run(futures);</a></code></pre></div>
+</section>
+<section id="async-await" class="slide level2">
+<h2><code>async</code> &amp; <code>await</code></h2>
+</section>
+<section class="slide level2">
+
+<p>Write code that looks synchronous but really isn’t</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode rust"><code class="sourceCode rust"><a class="sourceLine" id="cb2-1" data-line-number="1">async <span class="kw">fn</span> do_this_thing() <span class="op">{</span> ... <span class="op">}</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">// ...</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="pp">await!</span>( do_this_thing() );</a></code></pre></div>
+</section>
+<section class="slide level2">
+
+<p><strong>Reminder:</strong> Futures are zero-cost-abstractions.</p>
+<p>They disappear from the code at compile-time!</p>
+</section>
+<section id="how" class="slide level2">
+<h2>How?!</h2>
+</section>
+<section class="slide level2">
+
+<h3 id="its-complicated">It’s complicated!</h3>
+<div class="fragment" data-fragment-index="3">
+<p>Clever people are working on it</p>
+</div>
+<div class="fragment" data-fragment-index="4">
+<p>In Groups</p>
+</div>
+<div class="fragment" data-fragment-index="5">
+<p>You might even call them “working groups”</p>
+</div>
+</section>
+<section id="networking-wg" class="slide level2">
+<h2>networking-WG</h2>
+<ul>
+<li>Implements async/await features in compiler</li>
+<li>Provides library ecosystem</li>
+</ul>
+</section>
+<section id="can-i-use-this" class="slide level2">
+<h2>Can I use this?</h2>
+</section>
+<section class="slide level2">
+
+<p><em>kinda</em> 😅</p>
+</section>
+<section class="slide level2">
+
+<h3 id="roadmap">Roadmap</h3>
+<ul>
+<li><code>async</code>/<code>await</code> syntax in nightly compiler</li>
+<li>library ecosystem is still being polished</li>
+</ul>
+<p>Expect more concrete progress early-2019</p>
+</section>
+<section class="slide level2">
+
+<p><strong>I don’t like answering questions on stage</strong></p>
+</section>
+<section id="you-made-it" class="slide level2">
+<h2>You made it!</h2>
 <p>Follow me on twitter <strong><code>@spacekookie</code></strong></p>
 <p>Or: <strong><code>kookie@spacekookie.de</code></strong></p>
 <p><br/></p>

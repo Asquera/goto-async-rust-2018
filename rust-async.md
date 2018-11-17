@@ -4,7 +4,7 @@ subtitle: The future of `Future<T>`
 transition: fade
 ---
 
-I'm not Florian!
+I'm not Florian
 
 ---
 
@@ -38,6 +38,22 @@ I do Rust things!
 
 ---
 
+## Concurrency is hard
+
+---
+
+*some funny gif*
+
+---
+
+Race conditions
+
+**vs**
+
+Inefficient scaling
+
+---
+
 ## Rust
 
 ---
@@ -52,86 +68,55 @@ I do Rust things!
 
 ## Safety
 
-> * Memory safety
-> * Thread safety
+---
+
+<div class="fragment" data-fragment-index="2">
+Memory safety
+</div>
+
+<div class="fragment" data-fragment-index="3">
+**and**
+
+Thread safety
+</div>
 
 ---
 
-*spectrum of programming languages here*
+*xkcd style spectrum of programming languages here*
 
 ---
 
-## Memory Safety
+It's about empowering developers
 
 ---
 
-* No garbage collector
-* No manual memory allocations
+> No matter what kind of code you are writing now, Rust empowers you to reach farther, to program with confidence in a wider variety of domains than you did before.
+
+<small>--- Rust book, foreword</small>
 
 ---
 
-**Ownership**
+## Async
 
 ---
 
-*some picture to show ownership*
+## What is that?
 
 ---
 
-**Borrowing**
+## What does it know?
 
 ---
 
-*some picture to show borrowing*
+## Let's find out!
 
 ---
 
-## `Send` & `Sync`
-
-> * Send = Can be sent between thread boundries safely
-> * Sync = Can be *shared* between threads safely
+"Do this thing but don't make me wait"
 
 ---
 
-```rust
-struct MyFoo { ... }
-
-fn main() {
-    let foo = MyFoo { ... }; // Is neither Send nor Sync
-
-    let mutex = Mutex::new(foo); // Provides Sync
-
-    let arc = Arc::new(mutex); // Provides Send
-}
-```
-
----
-
-**The type system enforces thread safety**
-
----
-
-```rust
-let tcp_listener = ...;
-let state = ...; // Not Send or Sync
-
-for connection in tcp_listener.incoming() {
-    // Will not compile!
-    thread::spawn(|| do_stuff(connection, state)); 
-}
-```
-
----
-
-**Concurrency problems are made explicit**
-
----
-
-## What about async then?
-
----
-
-## What are Futures?
+## Futures
 
 ---
 
@@ -157,21 +142,17 @@ No, not that type of Futures
 
 ---
 
-**Other languages have this too**
+![](images/apache-vs-nginx.png)
 
 ---
 
-**Future = Promise**
-
-```js
-Promise { -> foobar() }
-    .and_then { -> barfoo() }
-    .await()
-```
-
 ---
 
-## What about Rust then?
+I'm here to show code and talk history
+
+<div class="fragment" data-fragment-index="2">
+and I'm all out of code
+</div>
 
 ---
 
@@ -187,6 +168,16 @@ Promise { -> foobar() }
 
 * Rust had green threading support
 * Enabled non-blocking IO
+
+---
+
+Included a runtime in `stdlib`
+
+* This came with a lot of problems
+
+---
+
+Rust wanted to go to different places
 
 ---
 
@@ -211,7 +202,26 @@ Sorry, did I say ~~libgreen~~, I meant `mio.rs`
 ---
 
 * Light, non-blocking IO library
+* Abstracts async over different platforms
 * Eventually developed an ecosystem around it
+
+---
+
+---
+
+<img src="images/hit-you-with-some-knowledge.gif" width=450px />
+
+---
+
+### Zero Cost Abstractions
+
+---
+
+**= no discernible runtime overhead**
+
+---
+
+*something explaining this here*
 
 ---
 
@@ -219,42 +229,118 @@ Sorry, did I say ~~libgreen~~, I meant `mio.rs`
 
 ---
 
+<img src="images/futures-rs-logo.svg" />
+
+---
+
+* *zero cost abstraction* for futures
+* Building async state-machines
+
+---
+
 ### `tokio-core`
 
 ---
 
-* Wraps around `mio.rs`
-* Futures abstraction
+* Wraps around `mio.rs` and `futures.rs`
 * Event reactor
 
 ---
 
-## tokio
-
-> * An event loop
-> * Futures abstraction
-> * Lots of utilities
+## Fast foward to 2018
 
 ---
 
-*small code example*
-
----
-
-**Thread safety still enforced by the typesystem**
-
----
-
-## tokio
+It's state machines all the way down
 
 ```rust
+let futures = async_a()
+                .and_then(|f| {
+                    async_b(f.some_data)
+                        .and_then(|f| run(f))
+                })
+                .and_then(|f| async_c(f.some_other_data))
+                    .map(|s| process(s))
+                    .map_err(|e| handle(e));
 
+// Actually run here
+tokio::run(futures);
 ```
 
 ---
 
+## `async` & `await`
 
-## That's it
+---
+
+Write code that looks synchronous but really isn't
+
+```rust
+async fn do_this_thing() { ... }
+
+// ...
+
+await!( do_this_thing() );
+```
+
+---
+
+**Reminder:** Futures are zero-cost-abstractions.
+
+They disappear from the code at compile-time!
+
+---
+
+## How?!
+
+---
+
+### It's complicated!
+
+<div class="fragment" data-fragment-index="3">
+Clever people are working on it
+</div>
+
+<div class="fragment" data-fragment-index="4">
+In Groups
+</div>
+
+<div class="fragment" data-fragment-index="5">
+You might even call them "working groups"
+</div>
+
+
+---
+
+## networking-WG
+
+* Implements async/await features in compiler
+* Provides library ecosystem
+
+---
+
+## Can I use this?
+
+---
+
+*kinda* 😅
+
+---
+
+### Roadmap
+
+* `async`/`await` syntax in nightly compiler
+* library ecosystem is still being polished
+
+Expect more concrete progress early-2019
+
+---
+
+**I don't like answering questions on stage**
+
+---
+
+## You made it!
 
 Follow me on twitter **`@spacekookie`**
 
