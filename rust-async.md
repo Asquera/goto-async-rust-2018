@@ -54,6 +54,10 @@ Inefficient scaling
 
 ---
 
+### What thread owns data?
+
+---
+
 ## Rust
 
 ---
@@ -77,6 +81,16 @@ Memory safety
 
 Thread safety
 </div>
+
+---
+
+## Ownership
+
+---
+
+* Data is always owned
+* Data can always be borrowed
+* Strict rules around borrowing and owning
 
 ---
 
@@ -119,6 +133,10 @@ Let's find out!
 ---
 
 "Do this thing but don't make me wait"
+
+---
+
+Not just a new Thread
 
 ---
 
