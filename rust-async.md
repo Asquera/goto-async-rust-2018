@@ -1,6 +1,6 @@
 ---
 title: async in Rust 2018
-subtitle: The future of `Future<T>`
+subtitle: The future of futures
 transition: fade
 ---
 
@@ -42,7 +42,7 @@ I do Rust things!
 
 ---
 
-*some funny gif*
+<img src="images/concurrency.gif" width=650px>
 
 ---
 
@@ -70,9 +70,7 @@ Inefficient scaling
 
 ---
 
-<div class="fragment" data-fragment-index="2">
 Memory safety
-</div>
 
 <div class="fragment" data-fragment-index="3">
 **and**
@@ -82,7 +80,11 @@ Thread safety
 
 ---
 
-*xkcd style spectrum of programming languages here*
+<img src="images/purity.png" width=800px>
+
+---
+
+**Rust breaks down these spectrums**
 
 ---
 
@@ -98,17 +100,21 @@ It's about empowering developers
 
 ## Async
 
----
+<div class="fragment" data-fragment-index="2">
+What is that?
+</div>
 
-## What is that?
+<div class="fragment" data-fragment-index="3">
+What does it know?
+</div>
 
----
+<div class="fragment" data-fragment-index="4">
+Does it know anything?
+</div>
 
-## What does it know?
-
----
-
-## Let's find out!
+<div class="fragment" data-fragment-index="5">
+Let's find out!
+</div>
 
 ---
 
@@ -130,7 +136,7 @@ No, not that type of Futures
 
 **`Future` = calculation that hasn't happened yet**
 
-> * Is probably gonna happen at some point
+> * Is *probably* gonna happen at some point
 > * Just keep asking
 
 ---
@@ -139,6 +145,10 @@ No, not that type of Futures
 
 * Keeps polling `Future` until it is ready
 * Runs your code whenever it can be run
+
+---
+
+## Why?
 
 ---
 
@@ -153,6 +163,10 @@ I'm here to show code and talk history
 <div class="fragment" data-fragment-index="2">
 and I'm all out of code
 </div>
+
+---
+
+![](images/back_to_the_future.gif)
 
 ---
 
@@ -177,7 +191,7 @@ Included a runtime in `stdlib`
 
 ---
 
-Rust wanted to go to different places
+Rust wanted to go in a different direction
 
 ---
 
@@ -207,8 +221,6 @@ Sorry, did I say ~~libgreen~~, I meant `mio.rs`
 
 ---
 
----
-
 <img src="images/hit-you-with-some-knowledge.gif" width=450px />
 
 ---
@@ -217,11 +229,17 @@ Sorry, did I say ~~libgreen~~, I meant `mio.rs`
 
 ---
 
-**= no discernible runtime overhead**
+**= no discernible* runtime overhead**
+
+<br />
 
 ---
 
-*something explaining this here*
+**= code that you can't write better by hand**
+
+<div class="fragment" data-fragment-index="2">
+This is how Iterators work too!
+</div>
 
 ---
 
@@ -255,13 +273,10 @@ It's state machines all the way down
 
 ```rust
 let futures = async_a()
-                .and_then(|f| {
-                    async_b(f.some_data)
-                        .and_then(|f| run(f))
-                })
-                .and_then(|f| async_c(f.some_other_data))
-                    .map(|s| process(s))
-                    .map_err(|e| handle(e));
+        .and_then(|f| async_b(f.some_data).and_then(|f| run(f)))
+        .and_then(|f| async_c(f.some_other_data))
+        .map(|s| process(s))
+        .map_err(|e| handle(e));
 
 // Actually run here
 tokio::run(futures);
