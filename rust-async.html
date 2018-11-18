@@ -352,7 +352,7 @@
 
 <p><strong>= code that you can’t write better by hand</strong></p>
 <div class="fragment" data-fragment-index="2">
-<p>This is how Iterators work too!</p>
+<p>Abstraction layers disappear at compile-time</p>
 </div>
 </section>
 <section id="mid-2016" class="slide level2">
@@ -395,6 +395,11 @@
 <a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">// Actually run here</span></a>
 <a class="sourceLine" id="cb1-8" data-line-number="8">tokio::run(futures);</a></code></pre></div>
 </section>
+<section class="slide level2">
+
+<p><strong>Reminder:</strong> Futures are zero-cost-abstractions.</p>
+<p>They disappear from the code at compile-time!</p>
+</section>
 <section id="async-await" class="slide level2">
 <h2><code>async</code> &amp; <code>await</code></h2>
 </section>
@@ -406,11 +411,6 @@
 <a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">// ...</span></a>
 <a class="sourceLine" id="cb2-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb2-5" data-line-number="5"><span class="pp">await!</span>( do_this_thing() );</a></code></pre></div>
-</section>
-<section class="slide level2">
-
-<p><strong>Reminder:</strong> Futures are zero-cost-abstractions.</p>
-<p>They disappear from the code at compile-time!</p>
 </section>
 <section id="how" class="slide level2">
 <h2>How?!</h2>

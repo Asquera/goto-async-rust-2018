@@ -256,7 +256,7 @@ Sorry, did I say ~~libgreen~~, I meant `mio.rs`
 **= code that you can't write better by hand**
 
 <div class="fragment" data-fragment-index="2">
-This is how Iterators work too!
+Abstraction layers disappear at compile-time
 </div>
 
 ---
@@ -302,6 +302,12 @@ tokio::run(futures);
 
 ---
 
+**Reminder:** Futures are zero-cost-abstractions.
+
+They disappear from the code at compile-time!
+
+---
+
 ## `async` & `await`
 
 ---
@@ -315,12 +321,6 @@ async fn do_this_thing() { ... }
 
 await!( do_this_thing() );
 ```
-
----
-
-**Reminder:** Futures are zero-cost-abstractions.
-
-They disappear from the code at compile-time!
 
 ---
 
