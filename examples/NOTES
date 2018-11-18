@@ -1,0 +1,27 @@
+# Kurze Notizen
+
+Beispiel 1 ist glaube selbsterklärend,
+ich erkläre dann normalerweise schnell
+noch hintendran ein _kaputtes_ Beispiel,
+um zu zeigen, was hier abgefangen wird.
+
+## Threads
+
+Da gibts glaube wenig zu zu sagen. Ich 
+würde danach allerdings verbal sagen,
+dass diese Situation einen dann zwingt,
+für Synchronisation zu sorgen, z.B. durch
+einen Mutex.
+
+## Futures
+
+Das ist einfach ein Beispiel, das eine Zeile
+stdin liest und wieder ausgibt.
+
+Das interessante hier ist, wie Ownership fliesst:
+die `read_until`-Future nimmt stdin und einen Puffer
+und _besitzt sie_ solange, bis sie in die nächste
+Future (`and_then`) übergeben werden.
+
+Du gibst im Prinzip also immer Ownership an die Futures
+- Laufzeit ab, die geben es dir dann wieder.
