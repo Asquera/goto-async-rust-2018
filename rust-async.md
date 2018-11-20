@@ -4,10 +4,6 @@ subtitle: The future of futures
 transition: fade
 ---
 
-I'm not Florian
-
----
-
 ## `whoami(1)`
 
 Katharina Fey ( `@spacekookie` )
@@ -94,15 +90,60 @@ Thread safety
 
 ---
 
+```rust
+let mut f = File::open("foo.txt")?;
+
+for _ in 0..3 {
+    thread::spawn(move || {
+        // ... read data from file or something ...
+
+        drop(f); // close the file
+    });
+}
+
+```
+
+---
+
+This would not compile!
+
+---
+
+```
+error[E0382]: capture of moved value: `f` --> main.rs:13:14
+   |
+10 | thread::spawn(move || {
+   |               ------- value moved (into closure) here
+...
+13 |     drop(f);
+   |          ^ value captured here after move
+   |
+```
+
+---
+
+```rust
+fn main() {
+    let f = File::open("foo.txt")?;
+
+    read_from_file(f);
+    read_from_file(f);
+}
+
+fn read_from_file(f: File) { ... }
+```
+
+---
+
+This will also not compile!
+
+---
+
 <img src="images/purity.png" width=800px>
 
 ---
 
 **Rust breaks down these spectrums**
-
----
-
-It's about empowering developers
 
 ---
 
@@ -179,7 +220,7 @@ No, not that type of Futures
 I'm here to show code and talk history
 
 <div class="fragment" data-fragment-index="2">
-and I'm all out of code
+and I'm ~~all~~ mostly out of code
 </div>
 
 ---
@@ -290,14 +331,17 @@ Abstraction layers disappear at compile-time
 It's state machines all the way down
 
 ```rust
-let futures = async_a()
-        .and_then(|f| async_b(f.some_data).and_then(|f| run(f)))
-        .and_then(|f| async_c(f.some_other_data))
-        .map(|s| process(s))
-        .map_err(|e| handle(e));
+// ... define `stdin` and `stdout`
+let reader = BufReader::new(stdin);
+let buffer = Vec::new();
 
-// Actually run here
-tokio::run(futures);
+let fut = io::read_until(reader, b'\n', buffer)
+      .and_then(move |(stdin, buffer)| {
+          stdout.write_all(&buffer).map_err(|e| panic!(e))
+      }).map_err(|e| panic!(e));
+
+// Actually run _here_
+tokio::run(fut);
 ```
 
 ---
@@ -366,10 +410,6 @@ You might even call them "working groups"
 * library ecosystem is still being polished
 
 Expect more concrete progress early-2019
-
----
-
-**I don't like answering questions on stage**
 
 ---
 
